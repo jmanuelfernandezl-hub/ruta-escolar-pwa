@@ -65,7 +65,7 @@ body{
 
 /* HEADER */
 header.top{
-  display:flex; align-items:center; justify-content:between; margin-bottom:14px;
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;
 }
 .brand{display:flex; align-items:center; gap:10px;}
 .brand-badge{
@@ -149,33 +149,6 @@ input:focus{border-color:var(--accent);}
 .empty-state{text-align:center; padding:36px 20px; color:var(--ink-soft);}
 .empty-state .glyph{font-size:34px; margin-bottom:8px;}
 
-.suggested-card{
-  background: linear-gradient(155deg, var(--ink) 0%, #2C3B5C 100%); color:#fff;
-  border-radius:var(--radius); padding:18px; box-shadow: 0 6px 20px rgba(30,42,68,0.25);
-  margin-bottom:16px; position:relative; overflow:hidden;
-}
-.suggested-eyebrow{
-  font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; color:var(--accent);
-  display:flex; align-items:center; gap:6px; margin-bottom:8px;
-}
-.pulse-dot{
-  width:7px;height:7px;border-radius:50%; background:var(--accent); animation:pulse 1.6s infinite;
-}
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(245,166,35,0.6);}
-  70%{box-shadow:0 0 0 8px rgba(245,166,35,0);}
-  100%{box-shadow:0 0 0 0 rgba(245,166,35,0);}
-}
-.suggested-name{font-family:var(--font-display); font-size:22px; font-weight:700; margin:0 0 2px;}
-.suggested-addr{font-size:13.5px; color:#C6D0E8; margin-bottom:12px;}
-.waze-btn{
-  width:100%; background:var(--accent); color:var(--accent-ink); border:none;
-  border-radius:12px; padding:14px; font-weight:700; font-size:15px; font-family:var(--font-body);
-  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
-}
-.suggested-subactions{display:flex; gap:8px; margin-top:10px;}
-.suggested-subactions .btn{flex:1;}
-
 /* TIMELINE */
 .timeline{position:relative; padding-left:26px;}
 .timeline::before{content:''; position:absolute; left:10px; top:6px; bottom:6px; width:2px; background:var(--line);}
@@ -197,16 +170,10 @@ input:focus{border-color:var(--accent);}
 .t-name{font-weight:700; font-size:13.5px;}
 .t-item.done .t-name, .t-item.skipped .t-name{text-decoration:line-through;}
 .t-addr{font-size:11.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.t-actions{display:flex; gap:4px; flex-shrink:0;}
 
 .section-title{
   font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--ink-faint); margin:18px 0 8px 2px; text-transform:uppercase;
 }
-.banner{
-  background:var(--danger-bg); color:#8A2A2E; border-radius:12px; padding:10px 12px; font-size:12.5px; margin-bottom:12px;
-}
-.banner.ok{background:var(--success-bg); color:#1D6B30;}
-.inline-edit{margin-top:8px; padding-top:8px; border-top:1.5px dashed var(--line);}
 .route-switcher{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
 .route-switcher::-webkit-scrollbar{display:none;}
 .route-chip{
@@ -229,11 +196,11 @@ input:focus{border-color:var(--accent);}
   <div id="lockScreen" style="display:none;">
     <div class="lock-card">
       <div style="font-size:36px; margin-bottom:8px;">🔒</div>
-      <h2 style="font-family:var::font-display; margin-bottom:6px;">Acceso Autorizado</h2>
+      <h2 style="font-family:var(--font-display); margin-bottom:6px;">Acceso Autorizado</h2>
       <p class="muted" style="margin-bottom:14px;">Ingresa el código de tu ruta y el PIN de acceso asignado por soporte para activar la aplicación en este dispositivo.</p>
       
       <label>Código de Ruta</label>
-      <input type="text" id="lockRouteCode" placeholder="Ej. ruta-norte-01">
+      <input type="text" id="lockRouteCode" placeholder="Ej. CMC-03-AM">
       
       <label>PIN de Acceso</label>
       <input type="password" id="lockPinInput" placeholder="******">
@@ -256,10 +223,6 @@ input:focus{border-color:var(--accent);}
     <span class="count-pill" id="stopCountPill">0/30</span>
   </header>
 
-  <button class="btn btn-accent btn-block" id="installAppBtn" style="display:none; margin-bottom:14px;">
-    ⬇ Instalar esta app en el celular
-  </button>
-
   <div class="route-switcher" id="routeChips"></div>
 
   <div class="tabs">
@@ -271,7 +234,7 @@ input:focus{border-color:var(--accent);}
   <div class="view active" id="view-setup">
     <div class="card">
       <h2>Nombre de esta ruta</h2>
-      <input type="text" id="routeNameInput" placeholder="Ej. Ruta mañana — Colegio San José">
+      <input type="text" id="routeNameInput" placeholder="Ej. CMC 03 AM">
       <div class="row-btns">
         <button class="btn btn-primary" id="saveRouteNameBtn" style="flex:1;">Guardar nombre</button>
         <button class="btn btn-danger btn-sm" id="deleteRouteBtn">🗑 Eliminar</button>
@@ -286,12 +249,6 @@ input:focus{border-color:var(--accent);}
         <button class="btn btn-ghost" id="geocodeAllBtn">📍 Ubicar direcciones</button>
       </div>
       <div id="geocodeStatus" class="tiny" style="margin-top:8px;"></div>
-    </div>
-
-    <div class="card">
-      <h2>🧭 Optimizar orden (calles reales)</h2>
-      <button class="btn btn-ghost btn-block" id="optimizeRouteBtn">🧭 Calcular mejor orden</button>
-      <div id="optimizeStatus" class="tiny" style="margin-top:8px;"></div>
     </div>
 
     <div class="card" id="addStopForm" style="display:none;">
@@ -340,8 +297,6 @@ input:focus{border-color:var(--accent);}
         </div>
         <button class="btn btn-ghost btn-sm" id="refreshLocBtn">🎯 Actualizar</button>
       </div>
-
-      <div id="suggestedWrap"></div>
 
       <div class="section-title">Orden del recorrido</div>
       <div class="timeline" id="timelineList"></div>
@@ -397,7 +352,6 @@ async function checkLicenseOnStartup() {
   }
   try {
     const lic = JSON.parse(atob(saved));
-    // Validación rápida en segundo plano contra Supabase
     const data = await sbFetch(`licencias_rutas?codigo_ruta=eq.${lic.routeCode}&select=*`);
     if (!data.length || !data[0].activo || data[0].pin_acceso !== lic.pin) {
       localStorage.removeItem(LICENSE_KEY);
@@ -421,7 +375,6 @@ document.getElementById('verifyPinBtn').addEventListener('click', async () => {
       errEl.textContent = 'Código de ruta o PIN incorrecto (o licencia inactiva).';
       return;
     }
-    // Guardar credencial cifrada localmente
     localStorage.setItem(LICENSE_KEY, btoa(JSON.stringify({ routeCode, pin })));
     document.getElementById('lockScreen').style.display = 'none';
   } catch(e) {
@@ -431,7 +384,6 @@ document.getElementById('verifyPinBtn').addEventListener('click', async () => {
 
 /* ALMACENAMIENTO LOCAL CIFRADO Y APP */
 const INDEX_KEY = 'rutas-index';
-const LAST_ROUTE_KEY = 'ultima-ruta-id';
 const baseKey = id => 'ruta-base-' + id;
 const tripKey = id => 'ruta-hoy-' + id;
 
@@ -458,22 +410,21 @@ async function saveTrip(id, data){
 }
 
 let routesIndex = [], currentRouteId = null, base = {routeName:'', stops:[]}, trip = null, currentPos = null;
-function uid(){ return 'p' + Math.random().toString(36).slice(2,9); }
-function rid(){ return 'r' + Math.random().toString(36).slice(2,9); }
 
 (async function init(){
   await checkLicenseOnStartup();
   routesIndex = await loadIndex();
   if(routesIndex.length === 0){
-    const id = rid();
-    routesIndex = [{ id, name:'Mi ruta' }];
+    const id = 'r6ax7o2f';
+    routesIndex = [{ id, name:'CMC 03 AM' }];
     await saveIndex(routesIndex);
-    await saveBase(id, { routeName:'Mi ruta', stops:[] });
+    await saveBase(id, { routeName:'CMC 03 AM', stops:[] });
   }
   currentRouteId = routesIndex[0].id;
   base = await loadBase(currentRouteId);
   trip = await loadTrip(currentRouteId);
   renderAll();
+  renderRouteChips();
 })();
 
 function renderAll(){
@@ -483,6 +434,24 @@ function renderAll(){
   renderSetupList();
   renderTripView();
 }
+
+function renderRouteChips(){
+  const wrap = document.getElementById('routeChips');
+  if(!routesIndex.length){ wrap.innerHTML = ''; return; }
+  wrap.innerHTML = routesIndex.map(r => `
+    <div class="route-chip ${r.id === currentRouteId ? 'active' : ''}" onclick="switchRoute('${r.id}')">
+      ${escapeHtml(r.name)}
+    </div>
+  `).join('');
+}
+
+window.switchRoute = async function(id){
+  currentRouteId = id;
+  base = await loadBase(currentRouteId);
+  trip = await loadTrip(currentRouteId);
+  renderAll();
+  renderRouteChips();
+};
 
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click', ()=>{
@@ -497,7 +466,11 @@ document.querySelectorAll('.tab').forEach(t=>{
 document.getElementById('saveRouteNameBtn').addEventListener('click', async ()=>{
   base.routeName = document.getElementById('routeNameInput').value.trim();
   await saveBase(currentRouteId, base);
+  // Actualizar también en el índice
+  const idx = routesIndex.find(r => r.id === currentRouteId);
+  if(idx){ idx.name = base.routeName; await saveIndex(routesIndex); }
   renderAll();
+  renderRouteChips();
 });
 
 const addForm = document.getElementById('addStopForm');
@@ -507,7 +480,7 @@ document.getElementById('confirmAddStopBtn').addEventListener('click', async ()=
   const name = document.getElementById('newStopName').value.trim();
   const addr = document.getElementById('newStopAddr').value.trim();
   if(!name || !addr) return;
-  base.stops.push({ id:uid(), name, address:addr, lat:null, lon:null });
+  base.stops.push({ id: 'p' + Math.random().toString(36).slice(2,9), name, address:addr, lat:null, lon:null });
   await saveBase(currentRouteId, base);
   document.getElementById('newStopName').value=''; document.getElementById('newStopAddr').value='';
   addForm.style.display='none';
@@ -579,7 +552,6 @@ function requestLocationAndSync(){
     currentPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
     document.getElementById('gpsStatus').textContent = `GPS Activo (${currentPos.lat.toFixed(4)}, ${currentPos.lon.toFixed(4)})`;
     
-    // ENVIAR GPS A SUPABASE EN SEGUNDO PLANO
     try {
       const savedLic = JSON.parse(atob(localStorage.getItem(LICENSE_KEY) || ''));
       if(savedLic && savedLic.routeCode){
@@ -607,6 +579,84 @@ function renderTimeline(){
   `).join('');
 }
 
+document.getElementById('restartTripBtn').addEventListener('click', async ()=>{
+  trip = null;
+  await saveTrip(currentRouteId, null);
+  renderTripView();
+});
+
+/* IMPORTADOR NATIVO DEFINITIVO (Soporta 2 rutas y 36 paradas) */
+document.getElementById('exportBackupBtn').addEventListener('click', () => {
+  const backup = {
+    app: "ruta-escolar",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    routesIndex: routesIndex,
+    routes: {}
+  };
+  routesIndex.forEach(r => {
+    const b = descifrarLocal(localStorage.getItem(baseKey(r.id))) || { routeName: r.name, stops:[] };
+    const t = descifrarLocal(localStorage.getItem(tripKey(r.id))) || null;
+    backup.routes[r.id] = { base: b, trip: t };
+  });
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ruta-escolar-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+});
+
+document.getElementById('importBackupBtn').addEventListener('click', () => {
+  document.getElementById('importFileInput').click();
+});
+
+document.getElementById('importFileInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    try {
+      const backup = JSON.parse(event.target.result);
+      const statusEl = document.getElementById('backupStatus');
+
+      if (!backup.routesIndex || !backup.routes) {
+        alert('El archivo no tiene el formato de respaldo válido.');
+        return;
+      }
+
+      routesIndex = backup.routesIndex;
+      await saveIndex(routesIndex);
+
+      for (const item of routesIndex) {
+        const rId = item.id;
+        const routeData = backup.routes[rId];
+        if (routeData) {
+          if (routeData.base) {
+            localStorage.setItem(baseKey(rId), cifrarLocal(routeData.base));
+          }
+          if (routeData.trip) {
+            localStorage.setItem(tripKey(rId), cifrarLocal(routeData.trip));
+          }
+        }
+      }
+
+      currentRouteId = routesIndex[0].id;
+      base = await loadBase(currentRouteId);
+      trip = await loadTrip(currentRouteId);
+
+      renderAll();
+      renderRouteChips();
+      
+      statusEl.textContent = '¡Éxito! Ambas rutas y 36 paradas cargadas. ✓';
+      setTimeout(() => { statusEl.textContent = ''; }, 4000);
+    } catch (err) {
+      alert('Error al procesar el archivo: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
 let pickerStopId = null, pickerMap = null, pickerMarker = null;
 window.openMapPicker = function(id){
   pickerStopId = id;
@@ -631,60 +681,6 @@ document.getElementById('saveMapPickBtn').addEventListener('click', async ()=>{
 });
 
 function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-/* IMPORTADOR NATIVO PARA EL RESPALDO OFICIAL DE RUTAS */
-document.getElementById('importBackupBtn').addEventListener('click', () => {
-  document.getElementById('importFileInput').click();
-});
-
-document.getElementById('importFileInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async (event) => {
-    try {
-      const backup = JSON.parse(event.target.result);
-      const statusEl = document.getElementById('backupStatus');
-
-      if (!backup.routesIndex || !backup.routes) {
-        alert('El archivo no tiene el formato de respaldo válido.');
-        return;
-      }
-
-      // 1. Cargar el índice completo de rutas (CMC 03 AM y CMC 03 PM)
-      routesIndex = backup.routesIndex;
-      await saveIndex(routesIndex);
-
-      // 2. Iterar y guardar explícitamente cada base y viaje de las dos rutas
-      for (const item of routesIndex) {
-        const rId = item.id;
-        const routeData = backup.routes[rId];
-        if (routeData) {
-          if (routeData.base) {
-            localStorage.setItem(baseKey(rId), cifrarLocal(routeData.base));
-          }
-          if (routeData.trip) {
-            localStorage.setItem(tripKey(rId), cifrarLocal(routeData.trip));
-          }
-        }
-      }
-
-      // 3. Establecer la primera ruta por defecto y renderizar todo
-      currentRouteId = routesIndex[0].id;
-      base = await loadBase(currentRouteId);
-      trip = await loadTrip(currentRouteId);
-
-      renderAll();
-      renderRouteChips(); // Asegura que aparezcan los botones de cambio arriba
-      
-      statusEl.textContent = '¡Éxito! Ambas rutas y sus 36 paradas cargadas. ✓';
-      setTimeout(() => { statusEl.textContent = ''; }, 4000);
-    } catch (err) {
-      alert('Error al procesar el archivo: ' + err.message);
-    }
-  };
-  reader.readAsText(file);
-});
 </script>
 </body>
 </html>
