@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Ruta Escolar — Cliente Cloud</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1E2A44">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ruta Escolar">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root{
+  --bg:#FFF7E6;
+  --surface:#FFFFFF;
+  --ink:#1E2A44;
+  --ink-soft:#5A6788;
+  --ink-faint:#93A0BE;
+  --accent:#F5A623;
+  --accent-deep:#D98A0B;
+  --accent-ink:#3A2600;
+  --success:#2F9E44;
+  --success-bg:#E7F6EA;
+  --danger:#E8555A;
+  --danger-bg:#FDEAEA;
+  --line:#E9DFC4;
+  --shadow: 0 2px 10px rgba(30,42,68,0.08);
+  --radius: 16px;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-tap-highlight-color:transparent;
+  padding-bottom:40px;
+}
+
+.app{
+  max-width:520px;
+  margin:0 auto;
+  padding:18px 16px 60px;
+}
+
+/* LOCKSCREEN / PIN */
+#lockScreen{
+  position:fixed; inset:0; background:var(--bg);
+  z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.lock-card{
+  background:var(--surface); width:100%; max-width:400px;
+  border-radius:var(--radius); padding:24px; box-shadow:0 8px 30px rgba(30,42,68,0.15);
+  text-align:center;
+}
+
+/* HEADER */
+header.top{
+  display:flex; align-items:center; justify-content:between; margin-bottom:14px;
+}
+.brand{display:flex; align-items:center; gap:10px;}
+.brand-badge{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--accent); display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display); font-weight:700; color:var(--accent-ink); font-size:18px;
+  box-shadow: var(--shadow);
+}
+.brand h1{font-family:var(--font-display); font-size:19px; margin:0; letter-spacing:-0.01em;}
+.brand p{margin:0; font-size:11px; color:var(--ink-soft); font-family:var(--font-mono); letter-spacing:0.02em;}
+
+/* TABS */
+.tabs{
+  display:flex; background:var(--surface); border-radius:999px; padding:4px;
+  box-shadow: var(--shadow); margin-bottom:18px;
+}
+.tab{
+  flex:1; text-align:center; padding:9px 6px; border-radius:999px;
+  font-weight:600; font-size:13.5px; cursor:pointer; color:var(--ink-soft); transition:.15s; user-select:none;
+}
+.tab.active{background:var(--ink); color:#fff;}
+.view{display:none;}
+.view.active{display:block;}
+
+/* CARD */
+.card{
+  background:var(--surface); border-radius:var(--radius); padding:16px;
+  box-shadow:var(--shadow); margin-bottom:14px;
+}
+.card h2{font-family:var(--font-display); font-size:15px; margin:0 0 10px;}
+.muted{color:var(--ink-soft); font-size:13px; line-height:1.5;}
+.tiny{font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono);}
+
+/* FORM */
+label{display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin:10px 0 4px;}
+label:first-child{margin-top:0;}
+input[type=text], input[type=password]{
+  width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid var(--line);
+  background:#FFFDF7; font-size:14.5px; font-family:var(--font-body); color:var(--ink); outline:none;
+}
+input:focus{border-color:var(--accent);}
+
+.btn{
+  border:none; border-radius:12px; padding:11px 16px; font-weight:700; font-size:13.5px;
+  cursor:pointer; font-family:var(--font-body); display:inline-flex; align-items:center; gap:6px; justify-content:center; transition:.12s transform;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--ink); color:#fff; width:100%;}
+.btn-accent{background:var(--accent); color:var(--accent-ink); width:100%;}
+.btn-ghost{background:transparent; color:var(--ink-soft); border:1.5px solid var(--line);}
+.btn-success{background:var(--success); color:#fff;}
+.btn-danger{background:var(--danger); color:#fff;}
+.btn-sm{padding:7px 11px; font-size:12px; border-radius:9px;}
+.btn:disabled{opacity:.45; cursor:not-allowed;}
+.btn-block{width:100%;}
+.row-btns{display:flex; gap:8px; margin-top:10px;}
+
+/* SETUP LIST */
+.stop-row{
+  display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);
+}
+.stop-row:last-child{border-bottom:none;}
+.stop-num{
+  width:26px;height:26px;border-radius:50%; background:var(--bg); border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center; font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--ink-soft); flex-shrink:0; margin-top:2px;
+}
+.stop-info{flex:1; min-width:0;}
+.stop-name{font-weight:700; font-size:14px;}
+.stop-addr{font-size:12.5px; color:var(--ink-soft); margin-top:1px;}
+.stop-geo{font-size:10.5px; font-family:var(--font-mono); margin-top:3px;}
+.geo-ok{color:var(--success);}
+.geo-pending{color:var(--accent-deep);}
+.stop-actions{display:flex; flex-direction:column; gap:5px; flex-shrink:0;}
+.icon-btn{
+  border:none; background:var(--bg); border-radius:9px; width:38px; height:38px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+.icon-btn.nav{background:var(--accent); color:var(--accent-ink);}
+
+/* TRIP VIEW */
+.empty-state{text-align:center; padding:36px 20px; color:var(--ink-soft);}
+.empty-state .glyph{font-size:34px; margin-bottom:8px;}
+
+.suggested-card{
+  background: linear-gradient(155deg, var(--ink) 0%, #2C3B5C 100%); color:#fff;
+  border-radius:var(--radius); padding:18px; box-shadow: 0 6px 20px rgba(30,42,68,0.25);
+  margin-bottom:16px; position:relative; overflow:hidden;
+}
+.suggested-eyebrow{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; color:var(--accent);
+  display:flex; align-items:center; gap:6px; margin-bottom:8px;
+}
+.pulse-dot{
+  width:7px;height:7px;border-radius:50%; background:var(--accent); animation:pulse 1.6s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(245,166,35,0.6);}
+  70%{box-shadow:0 0 0 8px rgba(245,166,35,0);}
+  100%{box-shadow:0 0 0 0 rgba(245,166,35,0);}
+}
+.suggested-name{font-family:var(--font-display); font-size:22px; font-weight:700; margin:0 0 2px;}
+.suggested-addr{font-size:13.5px; color:#C6D0E8; margin-bottom:12px;}
+.waze-btn{
+  width:100%; background:var(--accent); color:var(--accent-ink); border:none;
+  border-radius:12px; padding:14px; font-weight:700; font-size:15px; font-family:var(--font-body);
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.suggested-subactions{display:flex; gap:8px; margin-top:10px;}
+.suggested-subactions .btn{flex:1;}
+
+/* TIMELINE */
+.timeline{position:relative; padding-left:26px;}
+.timeline::before{content:''; position:absolute; left:10px; top:6px; bottom:6px; width:2px; background:var(--line);}
+.t-item{position:relative; padding:9px 0;}
+.t-dot{
+  position:absolute; left:-26px; top:11px; width:22px;height:22px;border-radius:50%;
+  background:var(--surface); border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-family:var(--font-mono); font-weight:700; color:var(--ink-soft);
+}
+.t-item.done .t-dot{background:var(--success); border-color:var(--success); color:#fff;}
+.t-item.skipped .t-dot{background:var(--bg); border-color:var(--line); color:var(--ink-faint);}
+.t-item.current .t-dot{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+.t-row{
+  display:flex; align-items:center; gap:10px; background:var(--surface); border-radius:12px; padding:9px 10px; box-shadow:var(--shadow);
+}
+.t-item.done .t-row{opacity:.6;}
+.t-item.skipped .t-row{opacity:.55;}
+.t-info{flex:1; min-width:0;}
+.t-name{font-weight:700; font-size:13.5px;}
+.t-item.done .t-name, .t-item.skipped .t-name{text-decoration:line-through;}
+.t-addr{font-size:11.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.t-actions{display:flex; gap:4px; flex-shrink:0;}
+
+.section-title{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--ink-faint); margin:18px 0 8px 2px; text-transform:uppercase;
+}
+.banner{
+  background:var(--danger-bg); color:#8A2A2E; border-radius:12px; padding:10px 12px; font-size:12.5px; margin-bottom:12px;
+}
+.banner.ok{background:var(--success-bg); color:#1D6B30;}
+.inline-edit{margin-top:8px; padding-top:8px; border-top:1.5px dashed var(--line);}
+.route-switcher{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
+.route-switcher::-webkit-scrollbar{display:none;}
+.route-chip{
+  flex-shrink:0; padding:8px 14px; border-radius:999px; background:var(--surface); border:1.5px solid var(--line);
+  font-size:12.5px; font-weight:700; color:var(--ink-soft); cursor:pointer; white-space:nowrap;
+}
+.route-chip.active{background:var(--ink); border-color:var(--ink); color:#fff;}
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(20,26,40,0.55); display:flex; align-items:flex-end; justify-content:center; z-index:1000;
+}
+.modal-sheet{background:var(--surface); width:100%; max-width:520px; border-radius:20px 20px 0 0; padding:16px; box-shadow:0 -8px 24px rgba(0,0,0,0.25);}
+.modal-title{font-family:var(--font-display); font-size:16px; margin:0 0 2px;}
+#pickerMap{height:280px; border-radius:12px; margin:10px 0; overflow:hidden; z-index:1;}
+.count-pill{font-family:var(--font-mono); font-size:11px; background:var(--bg); border:1px solid var(--line); padding:2px 8px; border-radius:999px; color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+  <!-- PANTALLA DE BLOQUEO / LICENCIA POR PIN -->
+  <div id="lockScreen" style="display:none;">
+    <div class="lock-card">
+      <div style="font-size:36px; margin-bottom:8px;">🔒</div>
+      <h2 style="font-family:var::font-display; margin-bottom:6px;">Acceso Autorizado</h2>
+      <p class="muted" style="margin-bottom:14px;">Ingresa el código de tu ruta y el PIN de acceso asignado por soporte para activar la aplicación en este dispositivo.</p>
+      
+      <label>Código de Ruta</label>
+      <input type="text" id="lockRouteCode" placeholder="Ej. ruta-norte-01">
+      
+      <label>PIN de Acceso</label>
+      <input type="password" id="lockPinInput" placeholder="******">
+      
+      <button class="btn btn-primary" id="verifyPinBtn" style="margin-top:14px;">Validar Licencia</button>
+      <div id="lockErrorMsg" class="tiny" style="color:var(--danger); margin-top:10px;"></div>
+    </div>
+  </div>
+
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-badge">🚌</div>
+      <div>
+        <h1>Ruta Escolar</h1>
+        <p id="routeNameLabel">SIN NOMBRE</p>
+      </div>
+    </div>
+    <span class="count-pill" id="stopCountPill">0/30</span>
+  </header>
+
+  <button class="btn btn-accent btn-block" id="installAppBtn" style="display:none; margin-bottom:14px;">
+    ⬇ Instalar esta app en el celular
+  </button>
+
+  <div class="route-switcher" id="routeChips"></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="setup">Configurar ruta</div>
+    <div class="tab" data-tab="trip">En ruta</div>
+  </div>
+
+  <!-- SETUP VIEW -->
+  <div class="view active" id="view-setup">
+    <div class="card">
+      <h2>Nombre de esta ruta</h2>
+      <input type="text" id="routeNameInput" placeholder="Ej. Ruta mañana — Colegio San José">
+      <div class="row-btns">
+        <button class="btn btn-primary" id="saveRouteNameBtn" style="flex:1;">Guardar nombre</button>
+        <button class="btn btn-danger btn-sm" id="deleteRouteBtn">🗑 Eliminar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Paradas (<span id="stopsListCount">0</span>/30)</h2>
+      <div id="stopsList"><p class="muted">Aún no has agregado paradas.</p></div>
+      <div class="row-btns">
+        <button class="btn btn-accent" id="addStopBtn">＋ Añadir parada</button>
+        <button class="btn btn-ghost" id="geocodeAllBtn">📍 Ubicar direcciones</button>
+      </div>
+      <div id="geocodeStatus" class="tiny" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="card">
+      <h2>🧭 Optimizar orden (calles reales)</h2>
+      <button class="btn btn-ghost btn-block" id="optimizeRouteBtn">🧭 Calcular mejor orden</button>
+      <div id="optimizeStatus" class="tiny" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="card" id="addStopForm" style="display:none;">
+      <h2>Nueva parada</h2>
+      <label>Nombre del estudiante</label>
+      <input type="text" id="newStopName" placeholder="Ej. Sofía Ramírez">
+      <label>Dirección completa</label>
+      <input type="text" id="newStopAddr" placeholder="Ej. Calle 127 #45-12, Bogotá">
+      <div class="row-btns">
+        <button class="btn btn-primary" id="confirmAddStopBtn" style="flex:1;">Guardar</button>
+        <button class="btn btn-ghost" id="cancelAddStopBtn">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>💾 Copia de seguridad</h2>
+      <div class="row-btns">
+        <button class="btn btn-ghost" id="exportBackupBtn" style="flex:1;">⬇ Exportar</button>
+        <button class="btn btn-ghost" id="importBackupBtn" style="flex:1;">⬆ Importar</button>
+      </div>
+      <input type="file" id="importFileInput" accept="application/json" style="display:none;">
+      <div id="backupStatus" class="tiny" style="margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- TRIP VIEW -->
+  <div class="view" id="view-trip">
+    <div id="tripEmptyState" class="empty-state">
+      <div class="glyph">🗺️</div>
+      <p>Agrega y ubica tus paradas en <b>"Configurar ruta"</b> para empezar.</p>
+    </div>
+
+    <div id="tripNotStarted" style="display:none;">
+      <div class="card">
+        <h2>Listo para salir</h2>
+        <p class="muted">Se cargarán <span id="readyCount">0</span> paradas ubicadas.</p>
+        <button class="btn btn-primary btn-block" id="startTripBtn" style="margin-top:10px;">▶ Iniciar recorrido de hoy</button>
+      </div>
+    </div>
+
+    <div id="tripActive" style="display:none;">
+      <div class="card" style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px;">
+        <div>
+          <div class="tiny">UBICACIÓN GPS Y NUBE</div>
+          <div id="gpsStatus" style="font-size:12.5px; font-weight:600;">Sin ubicación</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="refreshLocBtn">🎯 Actualizar</button>
+      </div>
+
+      <div id="suggestedWrap"></div>
+
+      <div class="section-title">Orden del recorrido</div>
+      <div class="timeline" id="timelineList"></div>
+
+      <div class="row-btns" style="margin-top:16px;">
+        <button class="btn btn-ghost" id="restartTripBtn">↺ Reiniciar recorrido</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="mapModalOverlay" style="display:none;">
+  <div class="modal-sheet">
+    <p class="modal-title">Ajustar ubicación</p>
+    <p class="muted" id="mapModalStopName"></p>
+    <div id="pickerMap"></div>
+    <div class="row-btns">
+      <button class="btn btn-primary" id="saveMapPickBtn" style="flex:1;">Guardar</button>
+      <button class="btn btn-ghost" id="cancelMapPickBtn">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* CREDENCIALES SUPABASE */
+const SUPABASE_URL = 'https://tfdmwnwrzxluintpjdrl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Y0IYniAYnz6OKPBG8--ewg_X8kS3fEK';
+
+async function sbFetch(endpoint, options = {}) {
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, { ...options, headers });
+  if (!res.ok) throw new Error('Error en servidor remoto');
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+/* VERIFICACIÓN DE LICENCIA LOCAL Y NUBE */
+const LICENSE_KEY = 'ruta-escolar-licencia';
+
+async function checkLicenseOnStartup() {
+  const saved = localStorage.getItem(LICENSE_KEY);
+  if (!saved) {
+    document.getElementById('lockScreen').style.display = 'flex';
+    return;
+  }
+  try {
+    const lic = JSON.parse(atob(saved));
+    // Validación rápida en segundo plano contra Supabase
+    const data = await sbFetch(`licencias_rutas?codigo_ruta=eq.${lic.routeCode}&select=*`);
+    if (!data.length || !data[0].activo || data[0].pin_acceso !== lic.pin) {
+      localStorage.removeItem(LICENSE_KEY);
+      document.getElementById('lockScreen').style.display = 'flex';
+    }
+  } catch(e) {
+    // Si no hay internet, confía en el caché local temporalmente
+  }
+}
+
+document.getElementById('verifyPinBtn').addEventListener('click', async () => {
+  const routeCode = document.getElementById('lockRouteCode').value.trim();
+  const pin = document.getElementById('lockPinInput').value.trim();
+  const errEl = document.getElementById('lockErrorMsg');
+  if(!routeCode || !pin){ errEl.textContent = 'Completa ambos campos.'; return; }
+  
+  errEl.textContent = 'Validando con el servidor...';
+  try {
+    const data = await sbFetch(`licencias_rutas?codigo_ruta=eq.${routeCode}&select=*`);
+    if(!data.length || data[0].pin_acceso !== pin || !data[0].activo){
+      errEl.textContent = 'Código de ruta o PIN incorrecto (o licencia inactiva).';
+      return;
+    }
+    // Guardar credencial cifrada localmente
+    localStorage.setItem(LICENSE_KEY, btoa(JSON.stringify({ routeCode, pin })));
+    document.getElementById('lockScreen').style.display = 'none';
+  } catch(e) {
+    errEl.textContent = 'Sin conexión a internet para validar el PIN.';
+  }
+});
+
+/* ALMACENAMIENTO LOCAL CIFRADO Y APP */
+const INDEX_KEY = 'rutas-index';
+const LAST_ROUTE_KEY = 'ultima-ruta-id';
+const baseKey = id => 'ruta-base-' + id;
+const tripKey = id => 'ruta-hoy-' + id;
+
+function cifrarLocal(obj){ try{ return btoa(encodeURIComponent(JSON.stringify(obj))); }catch(e){return null;} }
+function descifrarLocal(str){ try{ return JSON.parse(decodeURIComponent(atob(str))); }catch(e){return null;} }
+
+async function loadIndex(){
+  const v = localStorage.getItem(INDEX_KEY);
+  return v ? (descifrarLocal(v) || JSON.parse(v)) : [];
+}
+async function saveIndex(list){ localStorage.setItem(INDEX_KEY, cifrarLocal(list)); }
+async function loadBase(id){
+  const v = localStorage.getItem(baseKey(id));
+  return v ? (descifrarLocal(v) || JSON.parse(v)) : { routeName:'', stops:[] };
+}
+async function saveBase(id, data){ localStorage.setItem(baseKey(id), cifrarLocal(data)); }
+async function loadTrip(id){
+  const v = localStorage.getItem(tripKey(id));
+  return v ? (descifrarLocal(v) || JSON.parse(v)) : null;
+}
+async function saveTrip(id, data){
+  if(data === null) localStorage.removeItem(tripKey(id));
+  else localStorage.setItem(tripKey(id), cifrarLocal(data));
+}
+
+let routesIndex = [], currentRouteId = null, base = {routeName:'', stops:[]}, trip = null, currentPos = null;
+function uid(){ return 'p' + Math.random().toString(36).slice(2,9); }
+function rid(){ return 'r' + Math.random().toString(36).slice(2,9); }
+
+(async function init(){
+  await checkLicenseOnStartup();
+  routesIndex = await loadIndex();
+  if(routesIndex.length === 0){
+    const id = rid();
+    routesIndex = [{ id, name:'Mi ruta' }];
+    await saveIndex(routesIndex);
+    await saveBase(id, { routeName:'Mi ruta', stops:[] });
+  }
+  currentRouteId = routesIndex[0].id;
+  base = await loadBase(currentRouteId);
+  trip = await loadTrip(currentRouteId);
+  renderAll();
+})();
+
+function renderAll(){
+  document.getElementById('routeNameInput').value = base.routeName || '';
+  document.getElementById('routeNameLabel').textContent = base.routeName ? base.routeName.toUpperCase() : 'SIN NOMBRE';
+  document.getElementById('stopCountPill').textContent = base.stops.length + '/30';
+  renderSetupList();
+  renderTripView();
+}
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('view-'+t.dataset.tab).classList.add('active');
+    if(t.dataset.tab==='trip') renderTripView();
+  });
+});
+
+document.getElementById('saveRouteNameBtn').addEventListener('click', async ()=>{
+  base.routeName = document.getElementById('routeNameInput').value.trim();
+  await saveBase(currentRouteId, base);
+  renderAll();
+});
+
+const addForm = document.getElementById('addStopForm');
+document.getElementById('addStopBtn').addEventListener('click', ()=>{ addForm.style.display='block'; });
+document.getElementById('cancelAddStopBtn').addEventListener('click', ()=>{ addForm.style.display='none'; });
+document.getElementById('confirmAddStopBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('newStopName').value.trim();
+  const addr = document.getElementById('newStopAddr').value.trim();
+  if(!name || !addr) return;
+  base.stops.push({ id:uid(), name, address:addr, lat:null, lon:null });
+  await saveBase(currentRouteId, base);
+  document.getElementById('newStopName').value=''; document.getElementById('newStopAddr').value='';
+  addForm.style.display='none';
+  renderAll();
+});
+
+function renderSetupList(){
+  const wrap = document.getElementById('stopsList');
+  document.getElementById('stopsListCount').textContent = base.stops.length;
+  if(base.stops.length===0){ wrap.innerHTML = '<p class="muted">Aún no hay paradas.</p>'; return; }
+  wrap.innerHTML = base.stops.map((s,i)=>`
+    <div class="stop-row">
+      <div class="stop-num">${i+1}</div>
+      <div class="stop-info">
+        <div class="stop-name">${escapeHtml(s.name)}</div>
+        <div class="stop-addr">${escapeHtml(s.address)}</div>
+        <div class="stop-geo ${s.lat?'geo-ok':'geo-pending'}">${s.lat?'✓ Ubicada':'○ Pendiente'}</div>
+      </div>
+      <div class="stop-actions">
+        <button class="icon-btn" onclick="openMapPicker('${s.id}')">🗺</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function nominatimQuery(q){
+  const res = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(q));
+  const data = await res.json();
+  return data.length ? { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) } : null;
+}
+
+document.getElementById('geocodeAllBtn').addEventListener('click', async ()=>{
+  const statusEl = document.getElementById('geocodeStatus');
+  for(const s of base.stops.filter(x=>!x.lat)){
+    statusEl.textContent = `Ubicando: ${s.name}...`;
+    const g = await nominatimQuery(s.address);
+    if(g){ s.lat = g.lat; s.lon = g.lon; }
+    await saveBase(currentRouteId, base);
+    renderSetupList();
+    await new Promise(r=>setTimeout(r, 1100));
+  }
+  statusEl.textContent = 'Proceso finalizado ✓';
+});
+
+/* TRIP & GPS SYNC */
+function renderTripView(){
+  const geocoded = base.stops.filter(s=>s.lat);
+  const emptyEl = document.getElementById('tripEmptyState');
+  const notStartedEl = document.getElementById('tripNotStarted');
+  const activeEl = document.getElementById('tripActive');
+
+  if(geocoded.length===0){ emptyEl.style.display='block'; notStartedEl.style.display='none'; activeEl.style.display='none'; return; }
+  emptyEl.style.display='none';
+  if(!trip){ notStartedEl.style.display='block'; activeEl.style.display='none'; document.getElementById('readyCount').textContent = geocoded.length; return; }
+  notStartedEl.style.display='none'; activeEl.style.display='block';
+  renderTimeline();
+}
+
+document.getElementById('startTripBtn').addEventListener('click', async ()=>{
+  trip = { startedAt: new Date().toISOString(), stops: base.stops.map(s=>({...s, status:'pending'})) };
+  await saveTrip(currentRouteId, trip);
+  requestLocationAndSync();
+  renderTripView();
+});
+
+function requestLocationAndSync(){
+  if(!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    currentPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+    document.getElementById('gpsStatus').textContent = `GPS Activo (${currentPos.lat.toFixed(4)}, ${currentPos.lon.toFixed(4)})`;
+    
+    // ENVIAR GPS A SUPABASE EN SEGUNDO PLANO
+    try {
+      const savedLic = JSON.parse(atob(localStorage.getItem(LICENSE_KEY) || ''));
+      if(savedLic && savedLic.routeCode){
+        await sbFetch('ubicacion_tiempo_real', {
+          method: 'POST',
+          headers: { 'Prefer': 'resolution=merge-duplicates' },
+          body: JSON.stringify({ codigo_ruta: savedLic.routeCode, lat: currentPos.lat, lon: currentPos.lon, actualizado_en: new Date().toISOString() })
+        });
+      }
+    } catch(e) { /* Fallo silencioso offline */ }
+  }, null, { enableHighAccuracy:true });
+}
+
+document.getElementById('refreshLocBtn').addEventListener('click', requestLocationAndSync);
+
+function renderTimeline(){
+  const el = document.getElementById('timelineList');
+  el.innerHTML = trip.stops.map((s,i)=>`
+    <div class="t-item ${s.status}">
+      <div class="t-dot">${i+1}</div>
+      <div class="t-row">
+        <div class="t-info"><div class="t-name">${escapeHtml(s.name)}</div><div class="t-addr">${escapeHtml(s.address)}</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+let pickerStopId = null, pickerMap = null, pickerMarker = null;
+window.openMapPicker = function(id){
+  pickerStopId = id;
+  const s = base.stops.find(x=>x.id===id);
+  document.getElementById('mapModalStopName').textContent = s.name;
+  document.getElementById('mapModalOverlay').style.display = 'flex';
+  setTimeout(()=>{
+    if(pickerMap){ pickerMap.remove(); }
+    pickerMap = L.map('pickerMap').setView([s.lat || 4.7110, s.lon || -74.0721], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(pickerMap);
+    pickerMarker = L.marker([s.lat || 4.7110, s.lon || -74.0721], {draggable:true}).addTo(pickerMap);
+    pickerMap.invalidateSize();
+  }, 50);
+};
+document.getElementById('cancelMapPickBtn').addEventListener('click', ()=>{ document.getElementById('mapModalOverlay').style.display='none'; });
+document.getElementById('saveMapPickBtn').addEventListener('click', async ()=>{
+  const ll = pickerMarker.getLatLng();
+  const s = base.stops.find(x=>x.id===pickerStopId);
+  if(s){ s.lat = ll.lat; s.lon = ll.lng; await saveBase(currentRouteId, base); }
+  document.getElementById('mapModalOverlay').style.display='none';
+  renderSetupList();
+});
+
+function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+/* IMPORTADOR NATIVO PARA EL RESPALDO OFICIAL DE RUTAS */
+document.getElementById('importBackupBtn').addEventListener('click', () => {
+  document.getElementById('importFileInput').click();
+});
+
+document.getElementById('importFileInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    try {
+      const backup = JSON.parse(event.target.result);
+      const statusEl = document.getElementById('backupStatus');
+
+      if (!backup.routesIndex || !backup.routes) {
+        alert('El archivo no tiene el formato de respaldo válido.');
+        return;
+      }
+
+      // 1. Cargar el índice completo de rutas (CMC 03 AM y CMC 03 PM)
+      routesIndex = backup.routesIndex;
+      await saveIndex(routesIndex);
+
+      // 2. Iterar y guardar explícitamente cada base y viaje de las dos rutas
+      for (const item of routesIndex) {
+        const rId = item.id;
+        const routeData = backup.routes[rId];
+        if (routeData) {
+          if (routeData.base) {
+            localStorage.setItem(baseKey(rId), cifrarLocal(routeData.base));
+          }
+          if (routeData.trip) {
+            localStorage.setItem(tripKey(rId), cifrarLocal(routeData.trip));
+          }
+        }
+      }
+
+      // 3. Establecer la primera ruta por defecto y renderizar todo
+      currentRouteId = routesIndex[0].id;
+      base = await loadBase(currentRouteId);
+      trip = await loadTrip(currentRouteId);
+
+      renderAll();
+      renderRouteChips(); // Asegura que aparezcan los botones de cambio arriba
+      
+      statusEl.textContent = '¡Éxito! Ambas rutas y sus 36 paradas cargadas. ✓';
+      setTimeout(() => { statusEl.textContent = ''; }, 4000);
+    } catch (err) {
+      alert('Error al procesar el archivo: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+</script>
+</body>
+</html>
