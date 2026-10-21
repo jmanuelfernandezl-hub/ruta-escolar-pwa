@@ -192,20 +192,17 @@ input:focus{border-color:var(--accent);}
 </head>
 <body>
 
-  <!-- PANTALLA DE BLOQUEO / LICENCIA POR PIN -->
+  <!-- PANTALLA DE BLOQUEO / BOLSA DE PINES -->
   <div id="lockScreen" style="display:none;">
     <div class="lock-card">
-      <div style="font-size:36px; margin-bottom:8px;">🔒</div>
-      <h2 style="font-family:var(--font-display); margin-bottom:6px;">Acceso Autorizado</h2>
-      <p class="muted" style="margin-bottom:14px;">Ingresa el código de tu ruta y el PIN de acceso asignado por soporte para activar la aplicación en este dispositivo.</p>
-      
-      <label>Código de Ruta</label>
-      <input type="text" id="lockRouteCode" placeholder="Ej. CMC-03-AM">
+      <div style="font-size:36px; margin-bottom:8px;">🔑</div>
+      <h2 style="font-family:var(--font-display); margin-bottom:6px;">Acceso a la Flota</h2>
+      <p class="muted" style="margin-bottom:14px;">Ingresa tu PIN personal o de la licencia asignada para iniciar turno en este dispositivo.</p>
       
       <label>PIN de Acceso</label>
-      <input type="password" id="lockPinInput" placeholder="******">
+      <input type="password" id="lockPinInput" placeholder="******" style="text-align:center; font-size:18px; letter-spacing:2px;">
       
-      <button class="btn btn-primary" id="verifyPinBtn" style="margin-top:14px;">Validar Licencia</button>
+      <button class="btn btn-primary" id="verifyPinBtn" style="margin-top:14px;">Ingresar al Sistema</button>
       <div id="lockErrorMsg" class="tiny" style="color:var(--danger); margin-top:10px;"></div>
     </div>
   </div>
@@ -341,8 +338,17 @@ async function sbFetch(endpoint, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
-/* VERIFICACIÓN DE LICENCIA LOCAL Y NUBE */
+/* VERIFICACIÓN DE LICENCIA CON BOLSA DE PINES UNIVERSALES */
 const LICENSE_KEY = 'ruta-escolar-licencia';
+
+function getOrCreateDeviceId() {
+  let devId = localStorage.getItem('ruta-device-id');
+  if(!devId) {
+    devId = 'dev_' + Math.random().toString(36).slice(2, 11) + Date.now().toString(36);
+    localStorage.setItem('ruta-device-id', devId);
+  }
+  return devId;
+}
 
 async function checkLicenseOnStartup() {
   const saved = localStorage.getItem(LICENSE_KEY);
@@ -352,33 +358,56 @@ async function checkLicenseOnStartup() {
   }
   try {
     const lic = JSON.parse(atob(saved));
-    const data = await sbFetch(`licencias_rutas?codigo_ruta=eq.${lic.routeCode}&select=*`);
-    if (!data.length || !data[0].activo || data[0].pin_acceso !== lic.pin) {
+    const data = await sbFetch(`licencias_rutas?pin_acceso=eq.${lic.pin}&select=*`);
+    const currentDevId = getOrCreateDeviceId();
+    
+    if (!data.length || !data[0].activo || data[0].dispositivo_id !== currentDevId) {
       localStorage.removeItem(LICENSE_KEY);
       document.getElementById('lockScreen').style.display = 'flex';
     }
   } catch(e) {
-    // Si no hay internet, confía en el caché local temporalmente
+    // Si no hay internet, permite operar temporalmente con la credencial local
   }
 }
 
 document.getElementById('verifyPinBtn').addEventListener('click', async () => {
-  const routeCode = document.getElementById('lockRouteCode').value.trim();
   const pin = document.getElementById('lockPinInput').value.trim();
   const errEl = document.getElementById('lockErrorMsg');
-  if(!routeCode || !pin){ errEl.textContent = 'Completa ambos campos.'; return; }
+  if(!pin){ errEl.textContent = 'Por favor ingresa tu PIN de acceso.'; return; }
   
-  errEl.textContent = 'Validando con el servidor...';
+  errEl.textContent = 'Validando PIN en la nube...';
   try {
-    const data = await sbFetch(`licencias_rutas?codigo_ruta=eq.${routeCode}&select=*`);
-    if(!data.length || data[0].pin_acceso !== pin || !data[0].activo){
-      errEl.textContent = 'Código de ruta o PIN incorrecto (o licencia inactiva).';
+    const data = await sbFetch(`licencias_rutas?pin_acceso=eq.${pin}&select=*`);
+    
+    if(!data.length){
+      errEl.textContent = 'PIN de acceso inválido.';
       return;
     }
-    localStorage.setItem(LICENSE_KEY, btoa(JSON.stringify({ routeCode, pin })));
+    
+    if(!data[0].activo){
+      errEl.textContent = 'Esta licencia se encuentra desactivada.';
+      return;
+    }
+
+    const currentDevId = getOrCreateDeviceId();
+    const assignedDev = data[0].dispositivo_id;
+
+    if(assignedDev && assignedDev !== currentDevId){
+      errEl.textContent = '⚠️ Este PIN ya está siendo usado en otro vehículo.';
+      return;
+    }
+
+    if(!assignedDev){
+      await sbFetch(`licencias_rutas?pin_acceso=eq.${pin}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ dispositivo_id: currentDevId })
+      });
+    }
+
+    localStorage.setItem(LICENSE_KEY, btoa(JSON.stringify({ pin })));
     document.getElementById('lockScreen').style.display = 'none';
   } catch(e) {
-    errEl.textContent = 'Sin conexión a internet para validar el PIN.';
+    errEl.textContent = 'Error de conexión al validar el PIN.';
   }
 });
 
@@ -466,7 +495,6 @@ document.querySelectorAll('.tab').forEach(t=>{
 document.getElementById('saveRouteNameBtn').addEventListener('click', async ()=>{
   base.routeName = document.getElementById('routeNameInput').value.trim();
   await saveBase(currentRouteId, base);
-  // Actualizar también en el índice
   const idx = routesIndex.find(r => r.id === currentRouteId);
   if(idx){ idx.name = base.routeName; await saveIndex(routesIndex); }
   renderAll();
@@ -554,11 +582,11 @@ function requestLocationAndSync(){
     
     try {
       const savedLic = JSON.parse(atob(localStorage.getItem(LICENSE_KEY) || ''));
-      if(savedLic && savedLic.routeCode){
+      if(savedLic && savedLic.pin){
         await sbFetch('ubicacion_tiempo_real', {
           method: 'POST',
           headers: { 'Prefer': 'resolution=merge-duplicates' },
-          body: JSON.stringify({ codigo_ruta: savedLic.routeCode, lat: currentPos.lat, lon: currentPos.lon, actualizado_en: new Date().toISOString() })
+          body: JSON.stringify({ codigo_ruta: 'PIN-' + savedLic.pin, lat: currentPos.lat, lon: currentPos.lon, actualizado_en: new Date().toISOString() })
         });
       }
     } catch(e) { /* Fallo silencioso offline */ }
