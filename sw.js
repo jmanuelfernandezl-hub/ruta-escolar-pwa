@@ -1,6 +1,6 @@
-### 2. `sw.js` (Service Worker)
-```javascript
-const CACHE_NAME = 'ruta-escolar-v1';
+// v2: primero red, luego caché. Así las copias instaladas siempre reciben la
+// versión más reciente cuando hay internet, y siguen funcionando sin conexión.
+const CACHE_NAME = 'ruta-escolar-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -11,7 +11,9 @@ const APP_SHELL = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.addAll(APP_SHELL.map((u) => new Request(u, { cache: 'reload' })))
+    )
   );
   self.skipWaiting();
 });
@@ -26,21 +28,23 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const url = event.request.url;
+  const req = event.request;
+  if (req.method !== 'GET') return;
 
-  // Direcciones, mapas y Waze siempre necesitan la red: no se cachean.
-  if (
-    url.includes('nominatim.openstreetmap.org') ||
-    url.includes('tile.openstreetmap.org') ||
-    url.includes('waze.com') ||
-    url.includes('fonts.googleapis.com') ||
-    url.includes('fonts.gstatic.com')
-  ) {
-    return;
-  }
+  // Todo lo externo (Supabase, direcciones, mapas, Waze, fuentes, Leaflet...)
+  // va directo a la red, sin intervenir.
+  if (new URL(req.url).origin !== self.location.origin) return;
 
-  // El resto (la app en sí) funciona sin conexión: se sirve del caché primero.
+  // Archivos de la app: red primero (siempre lo más nuevo), caché si no hay conexión.
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(req)
+      .then((res) => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(req).then((hit) => hit || caches.match('./index.html')))
   );
 });

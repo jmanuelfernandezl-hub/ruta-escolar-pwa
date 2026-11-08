@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Ruta Escolar — Cliente Cloud</title>
+<title>Ruta Escolar — Optimizador</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1E2A44">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -52,65 +52,104 @@ body{
   padding:18px 16px 60px;
 }
 
-/* LOCKSCREEN / PIN */
-#lockScreen{
-  position:fixed; inset:0; background:var(--bg);
-  z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;
-}
-.lock-card{
-  background:var(--surface); width:100%; max-width:400px;
-  border-radius:var(--radius); padding:24px; box-shadow:0 8px 30px rgba(30,42,68,0.15);
-  text-align:center;
-}
-
 /* HEADER */
 header.top{
-  display:flex; align-items:center; justify-content:between; margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
 }
 .brand{display:flex; align-items:center; gap:10px;}
 .brand-badge{
   width:38px;height:38px;border-radius:10px;
-  background:var(--accent); display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display); font-weight:700; color:var(--accent-ink); font-size:18px;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display); font-weight:700; color:var(--accent-ink);
+  font-size:18px;
   box-shadow: var(--shadow);
 }
-.brand h1{font-family:var(--font-display); font-size:19px; margin:0; letter-spacing:-0.01em;}
+.brand h1{
+  font-family:var(--font-display);
+  font-size:19px;
+  margin:0;
+  letter-spacing:-0.01em;
+}
 .brand p{margin:0; font-size:11px; color:var(--ink-soft); font-family:var(--font-mono); letter-spacing:0.02em;}
 
 /* TABS */
 .tabs{
-  display:flex; background:var(--surface); border-radius:999px; padding:4px;
-  box-shadow: var(--shadow); margin-bottom:18px;
+  display:flex;
+  background:var(--surface);
+  border-radius:999px;
+  padding:4px;
+  box-shadow: var(--shadow);
+  margin-bottom:18px;
 }
 .tab{
-  flex:1; text-align:center; padding:9px 6px; border-radius:999px;
-  font-weight:600; font-size:13.5px; cursor:pointer; color:var(--ink-soft); transition:.15s; user-select:none;
+  flex:1;
+  text-align:center;
+  padding:9px 6px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:13.5px;
+  cursor:pointer;
+  color:var(--ink-soft);
+  transition:.15s;
+  user-select:none;
 }
-.tab.active{background:var(--ink); color:#fff;}
+.tab.active{
+  background:var(--ink);
+  color:#fff;
+}
+
 .view{display:none;}
 .view.active{display:block;}
 
 /* CARD */
 .card{
-  background:var(--surface); border-radius:var(--radius); padding:16px;
-  box-shadow:var(--shadow); margin-bottom:14px;
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
 }
-.card h2{font-family:var(--font-display); font-size:15px; margin:0 0 10px;}
+.card h2{
+  font-family:var(--font-display);
+  font-size:15px;
+  margin:0 0 10px;
+}
 .muted{color:var(--ink-soft); font-size:13px; line-height:1.5;}
 .tiny{font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono);}
 
 /* FORM */
 label{display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin:10px 0 4px;}
 label:first-child{margin-top:0;}
-input[type=text], input[type=password]{
-  width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid var(--line);
-  background:#FFFDF7; font-size:14.5px; font-family:var(--font-body); color:var(--ink); outline:none;
+input[type=text]{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1.5px solid var(--line);
+  background:#FFFDF7;
+  font-size:14.5px;
+  font-family:var(--font-body);
+  color:var(--ink);
+  outline:none;
 }
-input:focus{border-color:var(--accent);}
+input[type=text]:focus{border-color:var(--accent);}
 
 .btn{
-  border:none; border-radius:12px; padding:11px 16px; font-weight:700; font-size:13.5px;
-  cursor:pointer; font-family:var(--font-body); display:inline-flex; align-items:center; gap:6px; justify-content:center; transition:.12s transform;
+  border:none;
+  border-radius:12px;
+  padding:11px 16px;
+  font-weight:700;
+  font-size:13.5px;
+  cursor:pointer;
+  font-family:var(--font-body);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  justify-content:center;
+  transition:.12s transform;
 }
 .btn:active{transform:scale(0.97);}
 .btn-primary{background:var(--ink); color:#fff; width:100%;}
@@ -125,12 +164,22 @@ input:focus{border-color:var(--accent);}
 
 /* SETUP LIST */
 .stop-row{
-  display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
 }
 .stop-row:last-child{border-bottom:none;}
 .stop-num{
-  width:26px;height:26px;border-radius:50%; background:var(--bg); border:1.5px solid var(--line);
-  display:flex;align-items:center;justify-content:center; font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--ink-soft); flex-shrink:0; margin-top:2px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--bg);
+  border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono); font-weight:700; font-size:12px;
+  color:var(--ink-soft);
+  flex-shrink:0;
+  margin-top:2px;
 }
 .stop-info{flex:1; min-width:0;}
 .stop-name{font-weight:700; font-size:14px;}
@@ -140,26 +189,46 @@ input:focus{border-color:var(--accent);}
 .geo-pending{color:var(--accent-deep);}
 .stop-actions{display:flex; flex-direction:column; gap:5px; flex-shrink:0;}
 .icon-btn{
-  border:none; background:var(--bg); border-radius:9px; width:38px; height:38px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center; font-size:16px;
+  border:none; background:var(--bg); border-radius:9px;
+  width:38px; height:38px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
 }
-.icon-btn.nav{background:var(--accent); color:var(--accent-ink);}
+.icon-btn.nav{
+  background:var(--accent);
+  color:var(--accent-ink);
+}
 
 /* TRIP VIEW */
-.empty-state{text-align:center; padding:36px 20px; color:var(--ink-soft);}
+.empty-state{
+  text-align:center;
+  padding:36px 20px;
+  color:var(--ink-soft);
+}
 .empty-state .glyph{font-size:34px; margin-bottom:8px;}
 
 .suggested-card{
-  background: linear-gradient(155deg, var(--ink) 0%, #2C3B5C 100%); color:#fff;
-  border-radius:var(--radius); padding:18px; box-shadow: 0 6px 20px rgba(30,42,68,0.25);
-  margin-bottom:16px; position:relative; overflow:hidden;
+  background: linear-gradient(155deg, var(--ink) 0%, #2C3B5C 100%);
+  color:#fff;
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow: 0 6px 20px rgba(30,42,68,0.25);
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
 }
 .suggested-eyebrow{
-  font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; color:var(--accent);
-  display:flex; align-items:center; gap:6px; margin-bottom:8px;
+  font-family:var(--font-mono);
+  font-size:11px;
+  letter-spacing:0.08em;
+  color:var(--accent);
+  display:flex; align-items:center; gap:6px;
+  margin-bottom:8px;
 }
 .pulse-dot{
-  width:7px;height:7px;border-radius:50%; background:var(--accent); animation:pulse 1.6s infinite;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--accent);
+  animation:pulse 1.6s infinite;
 }
 @keyframes pulse{
   0%{box-shadow:0 0 0 0 rgba(245,166,35,0.6);}
@@ -168,46 +237,1566 @@ input:focus{border-color:var(--accent);}
 }
 .suggested-name{font-family:var(--font-display); font-size:22px; font-weight:700; margin:0 0 2px;}
 .suggested-addr{font-size:13.5px; color:#C6D0E8; margin-bottom:12px;}
+.suggested-meta{
+  display:flex; gap:14px; margin-bottom:14px;
+  font-family:var(--font-mono); font-size:12px; color:#9FB0D6;
+}
 .waze-btn{
-  width:100%; background:var(--accent); color:var(--accent-ink); border:none;
-  border-radius:12px; padding:14px; font-weight:700; font-size:15px; font-family:var(--font-body);
-  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none;
+  width:100%;
+  background:var(--accent);
+  color:var(--accent-ink);
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  font-weight:700;
+  font-size:15px;
+  font-family:var(--font-body);
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
 }
 .suggested-subactions{display:flex; gap:8px; margin-top:10px;}
 .suggested-subactions .btn{flex:1;}
 
 /* TIMELINE */
 .timeline{position:relative; padding-left:26px;}
-.timeline::before{content:''; position:absolute; left:10px; top:6px; bottom:6px; width:2px; background:var(--line);}
-.t-item{position:relative; padding:9px 0;}
+.timeline::before{
+  content:'';
+  position:absolute;
+  left:10px; top:6px; bottom:6px;
+  width:2px;
+  background:var(--line);
+}
+.t-item{
+  position:relative;
+  padding:9px 0;
+}
 .t-dot{
-  position:absolute; left:-26px; top:11px; width:22px;height:22px;border-radius:50%;
-  background:var(--surface); border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-family:var(--font-mono); font-weight:700; color:var(--ink-soft);
+  position:absolute;
+  left:-26px; top:11px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--surface);
+  border:2px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px;
+  font-family:var(--font-mono); font-weight:700;
+  color:var(--ink-soft);
 }
 .t-item.done .t-dot{background:var(--success); border-color:var(--success); color:#fff;}
 .t-item.skipped .t-dot{background:var(--bg); border-color:var(--line); color:var(--ink-faint);}
 .t-item.current .t-dot{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
 .t-row{
-  display:flex; align-items:center; gap:10px; background:var(--surface); border-radius:12px; padding:9px 10px; box-shadow:var(--shadow);
+  display:flex; align-items:center; gap:10px;
+  background:var(--surface);
+  border-radius:12px;
+  padding:9px 10px;
+  box-shadow:var(--shadow);
 }
 .t-item.done .t-row{opacity:.6;}
 .t-item.skipped .t-row{opacity:.55;}
 .t-info{flex:1; min-width:0;}
 .t-name{font-weight:700; font-size:13.5px;}
-.t-item.done .t-name, .t-item.skipped .t-name{text-decoration:line-through;}
+.t-item.done .t-name, .t-item.skipped .t-name{text-decoration:line-through; text-decoration-color:var(--ink-faint);}
 .t-addr{font-size:11.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .t-actions{display:flex; gap:4px; flex-shrink:0;}
 
+/* misc */
 .section-title{
-  font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--ink-faint); margin:18px 0 8px 2px; text-transform:uppercase;
+  font-family:var(--font-mono);
+  font-size:11px;
+  letter-spacing:.08em;
+  color:var(--ink-faint);
+  margin:18px 0 8px 2px;
+  text-transform:uppercase;
 }
 .banner{
-  background:var(--danger-bg); color:#8A2A2E; border-radius:12px; padding:10px 12px; font-size:12.5px; margin-bottom:12px;
+  background:var(--danger-bg); color:#8A2A2E;
+  border-radius:12px; padding:10px 12px; font-size:12.5px; margin-bottom:12px;
 }
 .banner.ok{background:var(--success-bg); color:#1D6B30;}
-.inline-edit{margin-top:8px; padding-top:8px; border-top:1.5px dashed var(--line);}
-.route-switcher{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
+.inline-edit{margin-top:8px; padding-top:8px; border-top:1px dashed var(--line);}
+.route-switcher{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  margin-bottom:14px;
+  -webkit-overflow-scrolling:touch;
+}
 .route-switcher::-webkit-scrollbar{display:none;}
 .route-chip{
-  flex-shrink:0; padding:8px 14px; border-radius:999px; background:var(--surface); border:1.5px solid var(--
+  flex-shrink:0;
+  padding:8px 14px;
+  border-radius:999px;
+  background:var(--surface);
+  border:1.5px solid var(--line);
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--ink-soft);
+  cursor:pointer;
+  white-space:nowrap;
+  display:flex; align-items:center; gap:5px;
+}
+.route-chip.active{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:#fff;
+}
+.route-chip.new{
+  background:var(--bg);
+  border-style:dashed;
+  color:var(--accent-deep);
+}
+.modal-overlay{
+  position:fixed; inset:0;
+  background:rgba(20,26,40,0.55);
+  display:flex; align-items:flex-end; justify-content:center;
+  z-index:1000;
+}
+.modal-sheet{
+  background:var(--surface);
+  width:100%; max-width:520px;
+  border-radius:20px 20px 0 0;
+  padding:16px;
+  box-shadow:0 -8px 24px rgba(0,0,0,0.25);
+}
+.modal-title{font-family:var(--font-display); font-size:16px; margin:0 0 2px;}
+#pickerMap{height:280px; border-radius:12px; margin:10px 0; overflow:hidden; z-index:1;}
+.alt-toggle{
+  display:inline-flex;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:2px;
+  margin-top:4px;
+}
+.alt-toggle-opt{
+  border:none;
+  background:transparent;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:10.5px;
+  font-weight:700;
+  color:var(--ink-soft);
+  cursor:pointer;
+}
+.alt-toggle-opt.active{
+  background:var(--accent);
+  color:var(--accent-ink);
+}
+.lock-screen{
+  position:fixed; inset:0; z-index:3000;
+  background:var(--bg);
+  display:none; align-items:center; justify-content:center;
+  padding:20px;
+}
+.lock-card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:var(--shadow);
+  width:100%; max-width:420px;
+}
+.lock-card h2{font-family:var(--font-display); font-size:20px; margin:0 0 6px;}
+.lock-error{color:#8A2A2E; font-size:13px; min-height:18px; margin-top:8px;}
+.count-pill{
+  font-family:var(--font-mono);
+  font-size:11px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  padding:2px 8px;
+  border-radius:999px;
+  color:var(--ink-soft);
+}
+</style>
+</head>
+<body>
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div style="font-size:34px; margin-bottom:6px;">🔒</div>
+    <h2>Acceso a la app</h2>
+    <p class="muted" id="lockMessage" style="margin-bottom:12px;"></p>
+    <label>Código de tu puesto</label>
+    <input type="text" id="lockCodeInput" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+    <div class="lock-error" id="lockError"></div>
+    <button class="btn btn-primary btn-block" id="activateBtn" style="margin-top:10px;">Entrar</button>
+    <p class="tiny" style="margin-top:14px; line-height:1.6;" id="lockContact"></p>
+    <p class="tiny" style="margin-top:6px;">ID de este dispositivo: <b id="lockDeviceId"></b></p>
+  </div>
+</div>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-badge">🚌</div>
+      <div>
+        <h1>Ruta Escolar</h1>
+        <p id="routeNameLabel">SIN NOMBRE</p>
+      </div>
+    </div>
+    <span class="count-pill" id="stopCountPill">0/30</span>
+  </header>
+
+  <button class="btn btn-accent btn-block" id="updateBtn" style="display:none; margin-bottom:14px;">⟳ Hay una versión nueva · toca para actualizar</button>
+  <button class="btn btn-accent btn-block" id="installAppBtn" style="display:none; margin-bottom:14px;">
+    ⬇ Instalar esta app en el celular
+  </button>
+
+  <div class="route-switcher" id="routeChips"></div>
+  <div id="newRouteForm" style="display:none; margin-bottom:14px;">
+    <div class="card" style="padding:12px;">
+      <label style="margin-top:0;">Nombre de la nueva ruta</label>
+      <input type="text" id="newRouteNameInput" placeholder="Ej. Ruta tarde — Colegio San José">
+      <div class="row-btns">
+        <button class="btn btn-primary" id="confirmNewRouteBtn" style="flex:1;">Crear ruta</button>
+        <button class="btn btn-ghost" id="cancelNewRouteBtn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="setup">Configurar ruta</div>
+    <div class="tab" data-tab="trip">En ruta</div>
+  </div>
+
+  <!-- ===================== SETUP VIEW ===================== -->
+  <div class="view active" id="view-setup">
+
+    <div class="card">
+      <h2>Nombre de esta ruta</h2>
+      <input type="text" id="routeNameInput" placeholder="Ej. Ruta mañana — Colegio San José">
+      <div class="row-btns">
+        <button class="btn btn-primary" id="saveRouteNameBtn" style="flex:1;">Guardar nombre</button>
+        <button class="btn btn-danger btn-sm" id="deleteRouteBtn">🗑 Eliminar ruta</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Paradas (<span id="stopsListCount">0</span>/30)</h2>
+      <div id="stopsList"><p class="muted">Aún no has agregado paradas.</p></div>
+      <div class="row-btns">
+        <button class="btn btn-accent" id="addStopBtn">＋ Añadir parada</button>
+        <button class="btn btn-ghost" id="geocodeAllBtn">📍 Ubicar direcciones</button>
+      </div>
+      <div id="geocodeStatus" class="tiny" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="card">
+      <h2>🧭 Optimizar orden (calles reales)</h2>
+      <p class="muted">Calcula el mejor orden posible entre tu primera y última parada, usando el tráfico
+      y la red de calles real (respeta sentidos únicos) en vez de línea recta. Úsalo solo al armar la ruta
+      o cuando cambie la dirección de algún estudiante — no hace falta correrlo todos los días.</p>
+      <button class="btn btn-ghost btn-block" id="optimizeRouteBtn" style="margin-top:6px;">🧭 Calcular mejor orden</button>
+      <div id="optimizeStatus" class="tiny" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="card" id="addStopForm" style="display:none;">
+      <h2>Nueva parada</h2>
+      <label>Nombre del estudiante</label>
+      <input type="text" id="newStopName" placeholder="Ej. Sofía Ramírez">
+      <label>Dirección completa</label>
+      <input type="text" id="newStopAddr" placeholder="Ej. Calle 127 #45-12, Bogotá">
+      <div class="row-btns">
+        <button class="btn btn-primary" id="confirmAddStopBtn" style="flex:1;">Guardar parada</button>
+        <button class="btn btn-ghost" id="cancelAddStopBtn">Cancelar</button>
+      </div>
+    </div>
+
+    <p class="muted" style="font-size:11.5px; line-height:1.6;">
+      💡 Las direcciones se ubican con OpenStreetMap (gratuito). El orden en que las agregues aquí
+      es solo tu lista base — el orden real de recorrido se calcula cada día en la pestaña <b>"En ruta"</b>
+      según tu ubicación y las paradas que falten.
+    </p>
+
+    <div class="card">
+      <h2>🔑 Licencia del puesto</h2>
+      <p class="muted" id="licenseStatusText"></p>
+      <p class="tiny" id="licenseDeviceText" style="margin-top:6px;"></p>
+      <button class="btn btn-ghost btn-block" id="releaseSeatBtn" style="margin-top:10px; display:none;">🔓 Terminar y liberar puesto</button>
+    </div>
+
+    <div class="card">
+      <h2>💾 Copia de seguridad y conductor de relevo</h2>
+      <p class="muted">Este archivo contiene TODAS tus rutas con sus direcciones ya ubicadas. Sirve para dos cosas:
+      restaurar tus datos si cambias de celular, o compartirlo con un conductor de relevo para que tenga
+      tus rutas listas de inmediato.</p>
+      <div class="row-btns">
+        <button class="btn btn-ghost" id="exportBackupBtn" style="flex:1;">⬇ Exportar copia</button>
+        <button class="btn btn-ghost" id="importBackupBtn" style="flex:1;">⬆ Importar copia</button>
+      </div>
+      <input type="file" id="importFileInput" accept="application/json" style="display:none;">
+      <div id="backupStatus" class="tiny" style="margin-top:8px;"></div>
+      <div class="inline-edit">
+        <p class="tiny" style="line-height:1.6;">
+          👤 <b>¿Eres el conductor de relevo?</b> Pide al conductor titular que te envíe este archivo
+          (por WhatsApp o correo). Instala la app desde el mismo enlace, abre "Configurar ruta" →
+          "Importar copia", elige el archivo, y tendrás todas las rutas y direcciones exactas al instante.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TRIP VIEW ===================== -->
+  <div class="view" id="view-trip">
+
+    <div id="tripEmptyState" class="empty-state">
+      <div class="glyph">🗺️</div>
+      <p>Agrega y ubica tus paradas en <b>"Configurar ruta"</b> para empezar el recorrido de hoy.</p>
+    </div>
+
+    <div id="tripNotStarted" style="display:none;">
+      <div class="card">
+        <h2>Listo para salir</h2>
+        <p class="muted">Se cargarán <span id="readyCount">0</span> paradas ubicadas. Podrás omitir o cambiar
+        cualquiera durante el trayecto sin afectar tu ruta guardada.</p>
+        <div id="unlocatedWarning"></div>
+        <button class="btn btn-primary btn-block" id="startTripBtn" style="margin-top:10px;">▶ Iniciar recorrido de hoy</button>
+      </div>
+    </div>
+
+    <div id="tripActive" style="display:none;">
+
+      <div class="card" style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px;">
+        <div>
+          <div class="tiny">UBICACIÓN GPS</div>
+          <div id="gpsStatus" style="font-size:12.5px; font-weight:600;">Sin ubicación</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="refreshLocBtn">🎯 Actualizar</button>
+      </div>
+
+      <div id="suggestedWrap"></div>
+
+      <div class="row-btns" style="margin-bottom:4px;">
+        <button class="btn btn-ghost" id="fullRouteMapsBtn" style="flex:1;">🗺️ Ver tramo restante sin zigzag (Google Maps)</button>
+      </div>
+      <p class="tiny" style="margin:0 0 14px; line-height:1.5;">
+        Calcula el camino completo de las paradas pendientes de una sola vez, para evitar retrocesos.
+        Se abre en Google Maps (no en Waze) solo para este tramo — tu recorrido y el orden fijo no cambian.
+      </p>
+
+      <div class="section-title">Orden del recorrido (fijo)</div>
+      <div class="timeline" id="timelineList"></div>
+
+      <div class="row-btns" style="margin-top:16px;">
+        <button class="btn btn-ghost" id="restartTripBtn">↺ Reiniciar recorrido de hoy</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="optimizeModalOverlay" style="display:none;">
+  <div class="modal-sheet" style="max-height:85vh; overflow-y:auto;">
+    <p class="modal-title">Orden sugerido</p>
+    <p class="tiny" id="optimizeSummary" style="margin-bottom:10px;"></p>
+    <div id="optimizeOrderList"></div>
+    <div class="row-btns" style="margin-top:12px;">
+      <button class="btn btn-primary" id="applyOptimizeBtn" style="flex:1;">✓ Aplicar este orden</button>
+      <button class="btn btn-ghost" id="cancelOptimizeBtn">Cancelar</button>
+    </div>
+    <p class="tiny" style="margin-top:8px;">La primera y la última parada de tu lista quedan fijas — solo se reordena lo del medio.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="altAddressModalOverlay" style="display:none;">
+  <div class="modal-sheet">
+    <p class="modal-title">Dirección alterna</p>
+    <p class="muted" id="altModalStopName" style="margin:0 0 8px;"></p>
+    <p class="tiny" style="margin-bottom:6px;">
+      Para estudiantes con un segundo punto de recogida/entrega (ej. actividades extraescolares).
+      Podrás elegir cuál usar cada día desde "En ruta".
+    </p>
+    <label style="margin-top:4px;">Dirección alterna</label>
+    <input type="text" id="altAddressInput" placeholder="Ej. Cra 9 #63-20, sede deportiva">
+    <div class="row-btns">
+      <button class="btn btn-primary" id="saveAltAddressBtn" style="flex:1;">Guardar y ubicar</button>
+      <button class="btn btn-ghost" id="cancelAltAddressBtn">Cancelar</button>
+    </div>
+    <div id="altAddressStatus" class="tiny" style="margin-top:8px;"></div>
+    <div id="removeAltWrap" style="margin-top:10px; display:none;">
+      <button class="btn btn-danger btn-sm btn-block" id="removeAltAddressBtn">🗑 Quitar dirección alterna</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="mapModalOverlay" style="display:none;">
+  <div class="modal-sheet">
+    <p class="modal-title">Ajustar ubicación</p>
+    <p class="muted" id="mapModalStopName" style="margin:0 0 2px;"></p>
+    <p class="tiny">Arrastra el pin (o toca el mapa) hasta el punto exacto de recogida.</p>
+    <div class="row-btns" style="margin-top:2px;">
+      <input type="text" id="pickerSearchInput" placeholder="Buscar otra dirección (opcional)" style="flex:1;">
+      <button class="btn btn-ghost btn-sm" id="pickerSearchBtn">Buscar</button>
+    </div>
+    <div id="pickerMap"></div>
+    <div class="row-btns">
+      <button class="btn btn-primary" id="saveMapPickBtn" style="flex:1;">Guardar ubicación</button>
+      <button class="btn btn-ghost" id="cancelMapPickBtn">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ---------------------------------------------------------
+   STORAGE HELPERS (multi-ruta)
+--------------------------------------------------------- */
+const INDEX_KEY = 'rutas-index';         // [{id, name}]
+const LAST_ROUTE_KEY = 'ultima-ruta-id';
+const baseKey = id => 'ruta-base-' + id;
+const tripKey = id => 'ruta-hoy-' + id;
+
+// Lee datos guardados en JSON plano (esta versión) o en Base64 (versiones
+// anteriores generadas con otro asistente), para no perder rutas ya cargadas.
+function parseStored(v){
+  try{ return JSON.parse(v); }catch(e){}
+  try{ return JSON.parse(decodeURIComponent(atob(v))); }catch(e){}
+  return null;
+}
+
+async function loadIndex(){
+  try{
+    const v = localStorage.getItem(INDEX_KEY);
+    return v ? (parseStored(v) || []) : [];
+  }catch(e){ return []; }
+}
+async function saveIndex(list){
+  try{ localStorage.setItem(INDEX_KEY, JSON.stringify(list)); }
+  catch(e){ console.error('storage error', e); }
+}
+async function loadBase(id){
+  try{
+    const v = localStorage.getItem(baseKey(id));
+    return v ? (parseStored(v) || { routeName:'', stops:[] }) : { routeName:'', stops:[] };
+  }catch(e){ return { routeName:'', stops:[] }; }
+}
+async function saveBase(id, data){
+  try{ localStorage.setItem(baseKey(id), JSON.stringify(data)); }
+  catch(e){ console.error('storage error', e); }
+}
+async function loadTrip(id){
+  try{
+    const v = localStorage.getItem(tripKey(id));
+    return v ? parseStored(v) : null;
+  }catch(e){ return null; }
+}
+async function saveTrip(id, data){
+  try{
+    if(data === null){ localStorage.removeItem(tripKey(id)); }
+    else{ localStorage.setItem(tripKey(id), JSON.stringify(data)); }
+  }
+  catch(e){ console.error('storage error', e); }
+}
+async function setLastRoute(id){
+  try{ localStorage.setItem(LAST_ROUTE_KEY, id); }catch(e){}
+}
+async function getLastRoute(){
+  try{ return localStorage.getItem(LAST_ROUTE_KEY); }
+  catch(e){ return null; }
+}
+
+/* ---------------------------------------------------------
+   STATE
+--------------------------------------------------------- */
+let routesIndex = [];                     // [{id,name}]
+let currentRouteId = null;
+let base = { routeName:'', stops:[] };    // {id,name,address,lat,lon}
+let trip = null;                          // {startedAt, stops:[{...base, status}]}
+let currentPos = null;                    // {lat, lon}
+
+function uid(){ return 'p' + Math.random().toString(36).slice(2,9); }
+function rid(){ return 'r' + Math.random().toString(36).slice(2,9); }
+
+/* ---------------------------------------------------------
+   LICENCIA POR PUESTO (Supabase)
+   Una licencia = un puesto de trabajo. Cualquier celular puede usarla
+   si está vigente y nadie más la está usando en ese momento.
+   La app NUNCA lee las tablas: solo llama a use_license / release_license
+   con el código y un ID aleatorio de este celular; el servidor responde
+   ok / busy / revoked / expired / invalid.
+   El puesto se "presta" por 60 minutos desde el último movimiento y se
+   renueva solo mientras usas la app. Se libera con el botón
+   «Terminar y liberar puesto» o, si te olvidas, al vencer ese plazo.
+   Ojo: el código de la app es público, así que esto frena a usuarios
+   comunes y te permite administrar/revocar, pero no es DRM.
+--------------------------------------------------------- */
+const SUPABASE_URL = 'https://tfdmwnwrzxluintpjdrl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Y0IYniAYnz6OKPBG8--ewg_X8kS3fEK'; // clave pública por diseño
+const LICENSE_ENFORCE = true;      // false = modo abierto (no bloquea a nadie)
+const OFFLINE_GRACE_HOURS = 24;    // horas que funciona sin poder verificar (mala señal, etc.)
+const RENEW_MINUTES = 2;           // no renueva más seguido que esto
+const CONTACT_TEXT = 'Pide el código de tu puesto a quien administra la app.';
+const LICENSE_STORE = 'ruta-escolar-license-v2';
+const DEVICE_STORE = 'ruta-escolar-device-id';
+
+function getDeviceId(){
+  let id = null;
+  try{ id = localStorage.getItem(DEVICE_STORE); }catch(e){}
+  if(!id){
+    id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+         : 'd' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    try{ localStorage.setItem(DEVICE_STORE, id); }catch(e){}
+  }
+  return id;
+}
+function readLicense(){
+  try{ return JSON.parse(localStorage.getItem(LICENSE_STORE) || 'null'); }catch(e){ return null; }
+}
+function writeLicense(obj){
+  try{
+    if(obj) localStorage.setItem(LICENSE_STORE, JSON.stringify(obj));
+    else localStorage.removeItem(LICENSE_STORE);
+  }catch(e){}
+}
+
+async function rpc(name, body){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), 10000);
+  try{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: ctrl.signal
+    });
+    if(!res.ok) throw new Error('http ' + res.status);
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }finally{ clearTimeout(timer); }
+}
+
+function reasonText(reason, freeAt){
+  switch(reason){
+    case 'invalid': return 'Código incorrecto. Revísalo e inténtalo de nuevo.';
+    case 'revoked': return 'Esta licencia fue desactivada.';
+    case 'expired': return 'Esta licencia venció.';
+    case 'busy': {
+      let cuando = '';
+      if(freeAt){
+        const hora = new Date(freeAt).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        cuando = ` Si no se sigue usando, se libera sola hacia las ${hora}.`;
+      }
+      return 'Este puesto está siendo usado en otro dispositivo en este momento.' + cuando +
+             ' Quien lo está usando puede pulsar «Terminar y liberar puesto».';
+    }
+    default: return 'No se pudo validar la licencia.';
+  }
+}
+
+function showLock(msg, err, prefillCode){
+  document.getElementById('lockMessage').textContent =
+    msg || 'Escribe el código de tu puesto para usar la app en este dispositivo.';
+  document.getElementById('lockError').textContent = err || '';
+  document.getElementById('lockContact').textContent = CONTACT_TEXT;
+  document.getElementById('lockDeviceId').textContent = getDeviceId().slice(0, 8);
+  if(prefillCode) document.getElementById('lockCodeInput').value = prefillCode;
+  document.getElementById('lockScreen').style.display = 'flex';
+}
+function hideLock(){ document.getElementById('lockScreen').style.display = 'none'; }
+
+function updateLicenseCard(){
+  const st = document.getElementById('licenseStatusText');
+  const dv = document.getElementById('licenseDeviceText');
+  const rb = document.getElementById('releaseSeatBtn');
+  const lic = readLicense();
+  if(!LICENSE_ENFORCE){
+    st.textContent = 'Modo abierto: la app no exige licencia en este momento.';
+    rb.style.display = 'none';
+  }else if(lic && lic.code){
+    const vence = lic.expires_at ? new Date(lic.expires_at).toLocaleDateString() : 'sin vencimiento';
+    st.textContent = `Puesto activo${lic.label ? ' · ' + lic.label : ''} · vence: ${vence}`;
+    rb.style.display = 'block';
+  }else{
+    st.textContent = 'Sin puesto activo en este dispositivo.';
+    rb.style.display = 'none';
+  }
+  dv.textContent = 'ID de este dispositivo: ' + getDeviceId().slice(0, 8);
+}
+
+let lastLicenseCheck = 0;
+let checkingLicense = false;
+async function checkLicense(){
+  if(checkingLicense) return;
+  checkingLicense = true;
+  lastLicenseCheck = Date.now();
+  try{
+    if(!LICENSE_ENFORCE){ updateLicenseCard(); return true; }
+    const lic = readLicense();
+    if(!lic || !lic.code){
+      showLock();
+      rpc('log_visit', { p_device: getDeviceId() }).catch(()=>{});
+      updateLicenseCard();
+      return false;
+    }
+    try{
+      const r = await rpc('use_license', { p_code: lic.code, p_session: getDeviceId() });
+      if(r && r.ok){
+        writeLicense({ ...lic, lastOk: Date.now(), expires_at: r.expires_at, label: r.label });
+        hideLock(); updateLicenseCard();
+        return true;
+      }
+      if(r && r.reason === 'busy'){
+        // Conserva el código para poder reintentar sin volver a escribirlo.
+        showLock(reasonText('busy', r.free_at), '', lic.code);
+        updateLicenseCard();
+        return false;
+      }
+      writeLicense(null);
+      showLock(reasonText(r && r.reason));
+      updateLicenseCard();
+      return false;
+    }catch(e){
+      // Sin conexión o servidor caído: se confía en la última verificación exitosa.
+      const ageHours = (Date.now() - (lic.lastOk || 0)) / 3600000;
+      const vencida = lic.expires_at && new Date(lic.expires_at) < new Date();
+      if(!vencida && ageHours <= OFFLINE_GRACE_HOURS){ hideLock(); updateLicenseCard(); return true; }
+      showLock(vencida ? 'Esta licencia venció.'
+        : `Hace más de ${OFFLINE_GRACE_HOURS} horas que esta copia no se puede verificar. Conéctate a internet y vuelve a abrir la app.`);
+      return false;
+    }
+  }finally{ checkingLicense = false; }
+}
+
+// Renueva el préstamo del puesto mientras se usa la app (sin molestar si ya se hizo hace poco).
+function touchSeat(){
+  if(!LICENSE_ENFORCE) return;
+  if(Date.now() - lastLicenseCheck < RENEW_MINUTES * 60000) return;
+  checkLicense();
+}
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) touchSeat(); });
+setInterval(()=>{ if(!document.hidden) touchSeat(); }, 5 * 60000);
+
+// Libera el puesto para que otro conductor pueda usarlo y bloquea este dispositivo.
+window.releaseSeatAndLock = async function(){
+  const lic = readLicense();
+  let liberado = true;
+  if(lic && lic.code){
+    try{ await rpc('release_license', { p_code: lic.code, p_session: getDeviceId() }); }
+    catch(e){ liberado = false; }
+  }
+  writeLicense(null);
+  showLock(liberado
+    ? 'Puesto liberado. Para volver a usar la app, escribe el código de tu puesto.'
+    : 'No hubo conexión para avisar al servidor: el puesto se liberará solo en menos de una hora.');
+  document.getElementById('lockCodeInput').value = '';
+  updateLicenseCard();
+};
+document.getElementById('releaseSeatBtn').addEventListener('click', ()=>{
+  if(confirm('¿Terminar y liberar este puesto? Otro conductor podrá usarlo y aquí tendrás que volver a escribir el código.')){
+    releaseSeatAndLock();
+  }
+});
+
+document.getElementById('activateBtn').addEventListener('click', async ()=>{
+  const input = document.getElementById('lockCodeInput');
+  const errEl = document.getElementById('lockError');
+  const btn = document.getElementById('activateBtn');
+  const code = input.value.trim();
+  if(!code){ errEl.textContent = 'Escribe el código de tu puesto.'; return; }
+  btn.disabled = true; errEl.textContent = 'Verificando...';
+  try{
+    const r = await rpc('use_license', { p_code: code, p_session: getDeviceId() });
+    if(r && r.ok){
+      writeLicense({ code, lastOk: Date.now(), expires_at: r.expires_at, label: r.label });
+      input.value = ''; errEl.textContent = '';
+      hideLock(); updateLicenseCard();
+    }else{
+      errEl.textContent = reasonText(r && r.reason, r && r.free_at);
+    }
+  }catch(e){
+    errEl.textContent = 'No se pudo conectar. Revisa tu internet e inténtalo de nuevo.';
+  }finally{ btn.disabled = false; }
+});
+
+/* ---------------------------------------------------------
+   INIT
+--------------------------------------------------------- */
+(async function init(){
+  checkLicense();
+  routesIndex = await loadIndex();
+  if(routesIndex.length === 0){
+    // primera vez: crear una ruta por defecto
+    const id = rid();
+    routesIndex = [{ id, name:'Mi ruta' }];
+    await saveIndex(routesIndex);
+    await saveBase(id, { routeName:'Mi ruta', stops:[] });
+  }
+  const last = await getLastRoute();
+  currentRouteId = (last && routesIndex.some(r=>r.id===last)) ? last : routesIndex[0].id;
+  base = await loadBase(currentRouteId);
+  trip = await loadTrip(currentRouteId);
+  renderAll();
+})();
+
+async function switchRoute(id){
+  currentRouteId = id;
+  await setLastRoute(id);
+  base = await loadBase(id);
+  trip = await loadTrip(id);
+  addForm.style.display = 'none';
+  renderAll();
+}
+
+function renderRouteChips(){
+  const wrap = document.getElementById('routeChips');
+  wrap.innerHTML = routesIndex.map(r=>`
+    <div class="route-chip ${r.id===currentRouteId?'active':''}" onclick="onSwitchRoute('${r.id}')">
+      ${escapeHtml(r.name || 'Sin nombre')}
+    </div>
+  `).join('') + `<div class="route-chip new" onclick="toggleNewRouteForm(true)">＋ Nueva ruta</div>`;
+}
+window.onSwitchRoute = function(id){ switchRoute(id); };
+
+window.toggleNewRouteForm = function(show){
+  document.getElementById('newRouteForm').style.display = show ? 'block' : 'none';
+  if(show) document.getElementById('newRouteNameInput').focus();
+};
+document.getElementById('cancelNewRouteBtn').addEventListener('click', ()=>toggleNewRouteForm(false));
+document.getElementById('confirmNewRouteBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('newRouteNameInput').value.trim();
+  if(!name){ alert('Ponle un nombre a la ruta.'); return; }
+  const id = rid();
+  routesIndex.push({ id, name });
+  await saveIndex(routesIndex);
+  await saveBase(id, { routeName:name, stops:[] });
+  document.getElementById('newRouteNameInput').value = '';
+  toggleNewRouteForm(false);
+  await switchRoute(id);
+});
+
+document.getElementById('deleteRouteBtn').addEventListener('click', async ()=>{
+  if(routesIndex.length <= 1){ alert('No puedes eliminar tu única ruta.'); return; }
+  if(!confirm(`¿Eliminar la ruta "${base.routeName || 'Sin nombre'}" y todas sus paradas? Esto no se puede deshacer.`)) return;
+  localStorage.removeItem(baseKey(currentRouteId));
+  localStorage.removeItem(tripKey(currentRouteId));
+  routesIndex = routesIndex.filter(r=>r.id!==currentRouteId);
+  await saveIndex(routesIndex);
+  await switchRoute(routesIndex[0].id);
+});
+
+function renderAll(){
+  document.getElementById('routeNameInput').value = base.routeName || '';
+  document.getElementById('routeNameLabel').textContent = base.routeName ? base.routeName.toUpperCase() : 'SIN NOMBRE';
+  document.getElementById('stopCountPill').textContent = base.stops.length + '/30';
+  renderRouteChips();
+  renderSetupList();
+  renderTripView();
+}
+
+/* ---------------------------------------------------------
+   TABS
+--------------------------------------------------------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('view-'+t.dataset.tab).classList.add('active');
+    if(t.dataset.tab === 'trip') renderTripView();
+  });
+});
+
+/* ---------------------------------------------------------
+   SETUP: route name
+--------------------------------------------------------- */
+document.getElementById('saveRouteNameBtn').addEventListener('click', async ()=>{
+  base.routeName = document.getElementById('routeNameInput').value.trim();
+  await saveBase(currentRouteId, base);
+  const idxEntry = routesIndex.find(r=>r.id===currentRouteId);
+  if(idxEntry){ idxEntry.name = base.routeName; await saveIndex(routesIndex); }
+  renderAll();
+});
+
+/* ---------------------------------------------------------
+   SETUP: add stop
+--------------------------------------------------------- */
+const addForm = document.getElementById('addStopForm');
+document.getElementById('addStopBtn').addEventListener('click', ()=>{
+  if(base.stops.length >= 30){ alert('Ya tienes 30 paradas, el máximo permitido.'); return; }
+  addForm.style.display = 'block';
+  document.getElementById('newStopName').focus();
+});
+document.getElementById('cancelAddStopBtn').addEventListener('click', ()=>{
+  addForm.style.display = 'none';
+  document.getElementById('newStopName').value='';
+  document.getElementById('newStopAddr').value='';
+});
+document.getElementById('confirmAddStopBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('newStopName').value.trim();
+  const addr = document.getElementById('newStopAddr').value.trim();
+  if(!name || !addr){ alert('Completa nombre y dirección.'); return; }
+  base.stops.push({ id: uid(), name, address: addr, lat:null, lon:null });
+  await saveBase(currentRouteId, base);
+  document.getElementById('newStopName').value='';
+  document.getElementById('newStopAddr').value='';
+  addForm.style.display='none';
+  renderAll();
+});
+
+function renderSetupList(){
+  const wrap = document.getElementById('stopsList');
+  document.getElementById('stopsListCount').textContent = base.stops.length;
+  if(base.stops.length === 0){
+    wrap.innerHTML = '<p class="muted">Aún no has agregado paradas.</p>';
+    return;
+  }
+  wrap.innerHTML = base.stops.map((s,i)=>`
+    <div class="stop-row">
+      <div class="stop-num">${i+1}</div>
+      <div class="stop-info">
+        <div class="stop-name">${escapeHtml(s.name)}</div>
+        <div class="stop-addr">${escapeHtml(s.address)}</div>
+        <div class="stop-geo ${s.lat ? 'geo-ok' : 'geo-pending'}">${s.lat ? '✓ Ubicada' : '○ Pendiente de ubicar'}</div>
+        ${s.altAddress ? `
+          <div class="stop-addr" style="margin-top:4px; color:var(--accent-deep);">
+            🔀 Alterna: ${escapeHtml(s.altAddress)}
+            <span class="${s.altLat ? 'geo-ok' : 'geo-pending'}" style="font-family:var(--font-mono); font-size:10px;">${s.altLat ? '✓' : '○ sin ubicar'}</span>
+          </div>
+        ` : ''}
+      </div>
+      <div class="stop-actions">
+        <button class="icon-btn" title="Ajustar en mapa" onclick="openMapPicker('${s.id}')">🗺</button>
+        <button class="icon-btn" title="${s.altAddress ? 'Editar dirección alterna' : 'Añadir dirección alterna'}" onclick="openAltAddressForm('${s.id}')">🔀</button>
+        <button class="icon-btn" title="Subir" onclick="moveStop('${s.id}',-1)">↑</button>
+        <button class="icon-btn" title="Bajar" onclick="moveStop('${s.id}',1)">↓</button>
+        <button class="icon-btn" title="Eliminar" onclick="deleteStop('${s.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.moveStop = async function(id, dir){
+  const i = base.stops.findIndex(s=>s.id===id);
+  const j = i + dir;
+  if(j<0 || j>=base.stops.length) return;
+  [base.stops[i], base.stops[j]] = [base.stops[j], base.stops[i]];
+  await saveBase(currentRouteId, base);
+  renderSetupList();
+};
+window.deleteStop = async function(id){
+  if(!confirm('¿Eliminar esta parada de tu ruta base?')) return;
+  base.stops = base.stops.filter(s=>s.id!==id);
+  await saveBase(currentRouteId, base);
+  renderAll();
+};
+
+/* ---------------------------------------------------------
+   GEOCODING (Nominatim / OpenStreetMap)
+--------------------------------------------------------- */
+async function nominatimQuery(q){
+  const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(q);
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('geocode failed');
+  const data = await res.json();
+  return data.length ? { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) } : null;
+}
+
+async function geocodeAddress(address){
+  // primer intento: la dirección tal cual
+  let result = await nominatimQuery(address);
+  if(result) return result;
+
+  // segundo intento: muchas direcciones (sobre todo con nomenclatura tipo "Calle 127 #45-12")
+  // fallan en Nominatim por el símbolo "#". Lo probamos sin él.
+  if(address.includes('#')){
+    await new Promise(r=>setTimeout(r, 1100));
+    const simplified = address.replace(/#/g, ' ').replace(/\s+/g,' ').trim();
+    result = await nominatimQuery(simplified);
+    if(result) return result;
+  }
+  return null;
+}
+
+document.getElementById('geocodeAllBtn').addEventListener('click', async ()=>{
+  const statusEl = document.getElementById('geocodeStatus');
+  const pending = base.stops.filter(s=>!s.lat);
+  if(pending.length===0){ statusEl.textContent = 'Todas las direcciones ya están ubicadas ✓'; return; }
+  let done = 0, fails = [];
+  for(const s of pending){
+    statusEl.textContent = `Ubicando ${done+1}/${pending.length}: ${s.name}...`;
+    try{
+      const g = await geocodeAddress(s.address);
+      if(g){ s.lat = g.lat; s.lon = g.lon; } else { fails.push(s.name); }
+    }catch(e){ fails.push(s.name); }
+    done++;
+    await saveBase(currentRouteId, base);
+    renderSetupList();
+    await new Promise(r=>setTimeout(r, 1100)); // respeta límite de 1 req/seg de Nominatim
+  }
+  statusEl.textContent = fails.length
+    ? `Listo. No se pudo ubicar automáticamente: ${fails.join(', ')}. Usa el botón 🗺 junto a cada una para marcarla a mano en el mapa.`
+    : 'Todas las direcciones fueron ubicadas ✓';
+});
+
+/* ---------------------------------------------------------
+   TRIP VIEW
+--------------------------------------------------------- */
+function renderTripView(){
+  const geocoded = base.stops.filter(s=>s.lat);
+  const emptyEl = document.getElementById('tripEmptyState');
+  const notStartedEl = document.getElementById('tripNotStarted');
+  const activeEl = document.getElementById('tripActive');
+
+  if(geocoded.length === 0){
+    emptyEl.style.display='block'; notStartedEl.style.display='none'; activeEl.style.display='none';
+    return;
+  }
+  emptyEl.style.display='none';
+
+  if(!trip){
+    notStartedEl.style.display='block'; activeEl.style.display='none';
+    document.getElementById('readyCount').textContent = geocoded.length;
+    const unlocated = base.stops.filter(s=>!s.lat);
+    const warnEl = document.getElementById('unlocatedWarning');
+    warnEl.innerHTML = unlocated.length
+      ? `<div class="banner">⚠ ${unlocated.length} parada(s) sin ubicar: ${unlocated.map(s=>escapeHtml(s.name)).join(', ')}. No entrarán al recorrido hasta que las ubiques.</div>`
+      : '';
+    return;
+  }
+  notStartedEl.style.display='none'; activeEl.style.display='block';
+  renderGpsStatus();
+  renderSuggested();
+  renderTimeline();
+}
+
+document.getElementById('startTripBtn').addEventListener('click', async ()=>{
+  const unlocated = base.stops.filter(s=>!s.lat);
+  if(unlocated.length > 0){
+    alert(
+      `⚠ Estas ${unlocated.length} parada(s) no tienen ubicación guardada y NO entrarían al recorrido de hoy:\n\n` +
+      unlocated.map(s=>'• ' + s.name).join('\n') +
+      `\n\nVe a "Configurar ruta" y ubícalas (con "Ubicar direcciones" o el botón 🗺) antes de iniciar.`
+    );
+    return;
+  }
+  trip = {
+    startedAt: new Date().toISOString(),
+    stops: base.stops.map(s=>({...s, status:'pending', useAlt:false}))
+  };
+  await saveTrip(currentRouteId, trip);
+  requestLocation();
+  renderTripView();
+});
+
+document.getElementById('restartTripBtn').addEventListener('click', async ()=>{
+  if(!confirm('Esto reinicia el estado de todas las paradas de hoy (nada de tu ruta guardada se pierde). ¿Continuar?')) return;
+  trip = null;
+  await saveTrip(currentRouteId, null);
+  renderTripView();
+});
+
+document.getElementById('refreshLocBtn').addEventListener('click', requestLocation);
+
+function requestLocation(){
+  const statusEl = document.getElementById('gpsStatus');
+  if(!navigator.geolocation){
+    statusEl.textContent = 'GPS no disponible en este navegador';
+    return;
+  }
+  statusEl.textContent = 'Localizando...';
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      currentPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+      renderGpsStatus();
+      renderSuggested();
+      renderTimeline();
+    },
+    err=>{
+      document.getElementById('gpsStatus').textContent = 'No se pudo obtener ubicación (' + err.message + ')';
+    },
+    { enableHighAccuracy:true, timeout:8000 }
+  );
+}
+
+function renderGpsStatus(){
+  const el = document.getElementById('gpsStatus');
+  el.textContent = currentPos
+    ? `Activa · ${currentPos.lat.toFixed(4)}, ${currentPos.lon.toFixed(4)}`
+    : 'Sin ubicación — toca Actualizar';
+}
+
+/* ---------- distance + ordering ---------- */
+function haversineKm(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const dLat = (lat2-lat1) * Math.PI/180;
+  const dLon = (lon2-lon1) * Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// El recorrido sigue SIEMPRE el orden fijo que definiste en "Configurar ruta".
+// El GPS ya no decide el orden — solo se usa como referencia informativa de distancia.
+function computeOrder(){
+  return trip.stops.filter(s=>s.status==='pending');
+}
+
+function wazeUrl(lat, lon){
+  return `https://waze.com/ul?ll=${lat}%2C${lon}&navigate=yes`;
+}
+
+// Decide qué dirección usar hoy para una parada: la alterna si está activada
+// (y tiene coordenadas), o la principal en cualquier otro caso.
+function getEffectiveLoc(s){
+  if(s.useAlt && s.altLat){
+    return { lat: s.altLat, lon: s.altLon, address: s.altAddress };
+  }
+  return { lat: s.lat, lon: s.lon, address: s.address };
+}
+
+function altToggleHtml(s){
+  if(!s.altAddress) return '';
+  return `
+    <div class="alt-toggle">
+      <button class="alt-toggle-opt ${!s.useAlt ? 'active' : ''}" onclick="setUseAlt('${s.id}', false)">Principal</button>
+      <button class="alt-toggle-opt ${s.useAlt ? 'active' : ''}" onclick="setUseAlt('${s.id}', true)">🔀 Alterna hoy</button>
+    </div>
+  `;
+}
+
+// Candado anti-doble-toque: evita que un segundo toque accidental (por ejemplo,
+// justo cuando la pantalla se redibuja) dispare otra acción de inmediato.
+let actionLocked = false;
+function withTapGuard(fn){
+  return async function(...args){
+    touchSeat();
+    if(actionLocked) return;
+    actionLocked = true;
+    try{
+      await fn.apply(this, args);
+    }finally{
+      setTimeout(()=>{ actionLocked = false; }, 500);
+    }
+  };
+}
+
+window.setUseAlt = withTapGuard(async function(id, useAlt){
+  const s = trip.stops.find(x=>x.id===id);
+  if(!s) return;
+  s.useAlt = useAlt;
+  await saveTrip(currentRouteId, trip);
+  renderSuggested();
+  renderTimeline();
+});
+
+function renderSuggested(){
+  const wrap = document.getElementById('suggestedWrap');
+  const ordered = computeOrder();
+  if(ordered.length === 0){
+    wrap.innerHTML = `<div class="banner ok">🎉 No quedan paradas pendientes en el recorrido de hoy.</div>
+      <button class="btn btn-primary btn-block" style="margin-bottom:14px;" onclick="releaseSeatAndLock()">🔓 Terminar y liberar puesto</button>`;
+    return;
+  }
+  const next = ordered[0];
+  const loc = getEffectiveLoc(next);
+  const posEnRuta = trip.stops.filter(s=>s.status!=='skipped').findIndex(s=>s.id===next.id) + 1;
+  const totalActivas = trip.stops.filter(s=>s.status!=='skipped').length;
+  wrap.innerHTML = `
+    <div class="suggested-card">
+      <div class="suggested-eyebrow"><span class="pulse-dot"></span> SIGUIENTE PARADA · ${posEnRuta}/${totalActivas}</div>
+      <p class="suggested-name">${escapeHtml(next.name)}</p>
+      <p class="suggested-addr">${escapeHtml(loc.address)}${next.useAlt ? ' <span style="opacity:.8;">(alterna)</span>' : ''}</p>
+      ${next.altAddress ? `<div style="margin:-4px 0 10px;">${altToggleHtml(next)}</div>` : ''}
+      <button class="waze-btn" onclick="goToWaze('${next.id}')">🧭 Navegar con Waze</button>
+      <div class="suggested-subactions">
+        <button class="btn btn-success btn-sm" onclick="markStop('${next.id}','done')">✓ Completada</button>
+        <button class="btn btn-danger btn-sm" onclick="markStop('${next.id}','skipped')">⏭ Omitir</button>
+        <button class="btn btn-ghost btn-sm" onclick="openMapPicker('${next.id}','trip')" style="color:#fff; border-color:rgba(255,255,255,0.35);">✎ Hoy</button>
+      </div>
+    </div>
+  `;
+}
+
+window.goToWaze = function(id){
+  const s = trip.stops.find(x=>x.id===id);
+  if(!s) return;
+  const loc = getEffectiveLoc(s);
+  // location.href (navegación directa) es más confiable que window.open para que
+  // Android reconozca el enlace y abra la app de Waze en vez de quedarse en el navegador.
+  window.location.href = wazeUrl(loc.lat, loc.lon);
+};
+
+window.markStop = withTapGuard(async function(id, status){
+  const s = trip.stops.find(x=>x.id===id);
+  if(!s) return;
+  s.status = status;
+  await saveTrip(currentRouteId, trip);
+  renderSuggested();
+  renderTimeline();
+});
+
+function renderTimeline(){
+  const el = document.getElementById('timelineList');
+  const ordered = computeOrder();
+  const orderedIds = ordered.map(s=>s.id);
+  const doneSkipped = trip.stops.filter(s=>s.status!=='pending');
+  const rows = [];
+
+  ordered.forEach((s,i)=>{
+    rows.push({ stop:s, cls: i===0 ? 'current' : '', badge: i+1 });
+  });
+  doneSkipped.forEach(s=>{
+    rows.push({ stop:s, cls: s.status, badge: s.status==='done' ? '✓' : '×' });
+  });
+
+  el.innerHTML = rows.map(r=>{
+    const loc = getEffectiveLoc(r.stop);
+    return `
+    <div class="t-item ${r.cls}">
+      <div class="t-dot">${r.badge}</div>
+      <div class="t-row" style="align-items:flex-start;">
+        <div class="t-info">
+          <div class="t-name">${escapeHtml(r.stop.name)}</div>
+          <div class="t-addr">${escapeHtml(loc.address)}${r.stop.useAlt ? ' 🔀' : ''}</div>
+          ${r.stop.status==='pending' && r.stop.altAddress ? altToggleHtml(r.stop) : ''}
+        </div>
+        <div class="t-actions">
+          ${r.stop.status==='pending' ? `
+            <button class="icon-btn nav" title="Navegar" onclick="goToWaze('${r.stop.id}')">🧭</button>
+            <button class="icon-btn" title="Completada" onclick="markStop('${r.stop.id}','done')">✓</button>
+            <button class="icon-btn" title="Omitir" onclick="markStop('${r.stop.id}','skipped')">⏭</button>
+            <button class="icon-btn" title="Cambiar solo hoy" onclick="openMapPicker('${r.stop.id}','trip')">✎</button>
+            <button class="icon-btn" title="Mover antes" onclick="moveTripStop('${r.stop.id}',-1)">↑</button>
+            <button class="icon-btn" title="Mover después" onclick="moveTripStop('${r.stop.id}',1)">↓</button>
+          ` : `
+            <button class="icon-btn" title="Volver a pendiente" onclick="markStop('${r.stop.id}','pending')">↺</button>
+          `}
+        </div>
+      </div>
+    </div>
+  `;}).join('');
+}
+
+// Reordenar en vivo dentro del recorrido de hoy (no afecta la ruta guardada).
+// Solo mueve la parada dentro del grupo de paradas aún pendientes.
+window.moveTripStop = withTapGuard(async function(id, dir){
+  const pendingIds = trip.stops.filter(s=>s.status==='pending').map(s=>s.id);
+  const posInPending = pendingIds.indexOf(id);
+  const swapWithId = pendingIds[posInPending + dir];
+  if(!swapWithId) return;
+  const i = trip.stops.findIndex(s=>s.id===id);
+  const j = trip.stops.findIndex(s=>s.id===swapWithId);
+  [trip.stops[i], trip.stops[j]] = [trip.stops[j], trip.stops[i]];
+  await saveTrip(currentRouteId, trip);
+  renderSuggested();
+  renderTimeline();
+});
+
+/* ---------------------------------------------------------
+   BACKUP: exportar / importar
+--------------------------------------------------------- */
+document.getElementById('exportBackupBtn').addEventListener('click', exportBackup);
+document.getElementById('importBackupBtn').addEventListener('click', ()=>{
+  document.getElementById('importFileInput').click();
+});
+document.getElementById('importFileInput').addEventListener('change', handleImportFile);
+
+async function exportBackup(){
+  const statusEl = document.getElementById('backupStatus');
+  const routes = {};
+  for(const r of routesIndex){
+    const b = await loadBase(r.id);
+    const t = await loadTrip(r.id);
+    routes[r.id] = { base: b, trip: t };
+  }
+  const payload = {
+    app: 'ruta-escolar',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    routesIndex,
+    routes
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `ruta-escolar-backup-${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  statusEl.textContent = 'Copia descargada ✓ Guárdala en Drive, correo o donde prefieras.';
+}
+
+async function handleImportFile(e){
+  const file = e.target.files[0];
+  const statusEl = document.getElementById('backupStatus');
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const payload = JSON.parse(text);
+    if(!payload || payload.app !== 'ruta-escolar' || !Array.isArray(payload.routesIndex) || !payload.routes){
+      statusEl.textContent = '⚠ Este archivo no parece ser una copia válida de Ruta Escolar.';
+      e.target.value = '';
+      return;
+    }
+    const fecha = payload.exportedAt ? new Date(payload.exportedAt).toLocaleString() : 'fecha desconocida';
+    const ok = confirm(`Esto reemplazará TODAS tus rutas actuales por las ${payload.routesIndex.length} ruta(s) de esta copia (creada el ${fecha}). ¿Continuar?`);
+    if(!ok){ e.target.value=''; return; }
+
+    // limpiar rutas actuales
+    for(const r of routesIndex){
+      localStorage.removeItem(baseKey(r.id));
+      localStorage.removeItem(tripKey(r.id));
+    }
+    // escribir las rutas del respaldo
+    for(const id of Object.keys(payload.routes)){
+      await saveBase(id, payload.routes[id].base || { routeName:'', stops:[] });
+      if(payload.routes[id].trip){ await saveTrip(id, payload.routes[id].trip); }
+    }
+    await saveIndex(payload.routesIndex);
+    routesIndex = payload.routesIndex;
+    currentRouteId = routesIndex.length ? routesIndex[0].id : null;
+    if(currentRouteId){
+      await setLastRoute(currentRouteId);
+      base = await loadBase(currentRouteId);
+      trip = await loadTrip(currentRouteId);
+    }
+    statusEl.textContent = '✓ Copia restaurada correctamente.';
+    renderAll();
+  }catch(err){
+    statusEl.textContent = '⚠ Error al leer el archivo: ' + err.message;
+  }
+  e.target.value = '';
+}
+
+/* ---------------------------------------------------------
+   OPTIMIZAR ORDEN CON CALLES REALES (OSRM)
+   Usa el servidor público y gratuito de OSRM (OpenStreetMap) para
+   obtener tiempos de viaje reales entre paradas (respeta sentidos
+   únicos, no es línea recta), y aplica una mejora tipo 2-opt
+   dejando fijas la primera y última parada.
+   Se ejecuta solo cuando el usuario lo pide — nunca automáticamente.
+--------------------------------------------------------- */
+let pendingOptimizedOrder = null;
+
+async function fetchDurationMatrix(points){
+  const coordStr = points.map(p => `${p.lon},${p.lat}`).join(';');
+  const url = `https://router.project-osrm.org/table/v1/driving/${coordStr}?annotations=duration`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('No se pudo contactar el servicio de rutas.');
+  const data = await res.json();
+  if(data.code !== 'Ok') throw new Error('El servicio de rutas no pudo procesar estas paradas.');
+  return data.durations; // matriz de segundos, con posibles null si no encontró camino
+}
+
+function tourDuration(tour, matrix){
+  let total = 0;
+  for(let i=0; i<tour.length-1; i++){
+    const d = matrix[tour[i]][tour[i+1]];
+    if(d == null) return Infinity;
+    total += d;
+  }
+  return total;
+}
+
+// 2-opt clásico, dejando fijos el primer y último elemento del recorrido.
+function twoOptFixedEnds(matrix, n){
+  let tour = Array.from({length:n}, (_, i) => i);
+  let improved = true;
+  while(improved){
+    improved = false;
+    for(let i=1; i<n-2; i++){
+      for(let j=i+1; j<n-1; j++){
+        const candidate = tour.slice(0,i).concat(tour.slice(i,j+1).reverse(), tour.slice(j+1));
+        if(tourDuration(candidate, matrix) < tourDuration(tour, matrix) - 0.5){
+          tour = candidate;
+          improved = true;
+        }
+      }
+    }
+  }
+  return tour;
+}
+
+document.getElementById('optimizeRouteBtn').addEventListener('click', async ()=>{
+  const statusEl = document.getElementById('optimizeStatus');
+  const unlocated = base.stops.filter(s=>!s.lat);
+  if(unlocated.length > 0){
+    statusEl.textContent = `⚠ Ubica primero estas paradas (no tienen coordenadas): ${unlocated.map(s=>s.name).join(', ')}.`;
+    return;
+  }
+  if(base.stops.length < 4){
+    statusEl.textContent = 'Necesitas al menos 4 paradas para que valga la pena optimizar.';
+    return;
+  }
+  statusEl.textContent = 'Calculando tiempos reales de viaje entre paradas...';
+  try{
+    const stops = base.stops;
+    const matrix = await fetchDurationMatrix(stops.map(s=>({lat:s.lat, lon:s.lon})));
+    const n = stops.length;
+    const currentOrderIdx = Array.from({length:n}, (_,i)=>i);
+    const currentTime = tourDuration(currentOrderIdx, matrix);
+    const newOrderIdx = twoOptFixedEnds(matrix, n);
+    const newTime = tourDuration(newOrderIdx, matrix);
+
+    pendingOptimizedOrder = newOrderIdx.map(i => stops[i]);
+    showOptimizeReview(stops, pendingOptimizedOrder, currentTime, newTime);
+    statusEl.textContent = '';
+  }catch(e){
+    statusEl.textContent = '⚠ ' + e.message + ' (revisa tu conexión e inténtalo de nuevo).';
+  }
+});
+
+function fmtMin(seconds){
+  if(!isFinite(seconds)) return '—';
+  return Math.round(seconds/60) + ' min';
+}
+
+function showOptimizeReview(original, optimized, currentTime, newTime){
+  const changed = optimized.some((s,i) => s.id !== original[i].id);
+  const summaryEl = document.getElementById('optimizeSummary');
+  if(!changed){
+    summaryEl.textContent = `Tu orden actual ya es el más eficiente según el tráfico real (≈ ${fmtMin(currentTime)} de recorrido). No hay nada que cambiar.`;
+  }else{
+    const ahorro = currentTime - newTime;
+    summaryEl.textContent = ahorro > 0
+      ? `Orden actual: ≈ ${fmtMin(currentTime)} · Orden sugerido: ≈ ${fmtMin(newTime)} (ahorras ≈ ${fmtMin(ahorro)}).`
+      : `Orden sugerido: ≈ ${fmtMin(newTime)}. La diferencia con tu orden actual (≈ ${fmtMin(currentTime)}) es mínima.`;
+  }
+  document.getElementById('optimizeOrderList').innerHTML = optimized.map((s,i)=>`
+    <div class="stop-row">
+      <div class="stop-num">${i+1}</div>
+      <div class="stop-info">
+        <div class="stop-name">${escapeHtml(s.name)}</div>
+        <div class="stop-addr">${escapeHtml(s.address)}</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('applyOptimizeBtn').style.display = changed ? 'block' : 'none';
+  document.getElementById('optimizeModalOverlay').style.display = 'flex';
+}
+
+document.getElementById('cancelOptimizeBtn').addEventListener('click', ()=>{
+  document.getElementById('optimizeModalOverlay').style.display = 'none';
+  pendingOptimizedOrder = null;
+});
+
+document.getElementById('applyOptimizeBtn').addEventListener('click', async ()=>{
+  if(!pendingOptimizedOrder) return;
+  base.stops = pendingOptimizedOrder;
+  await saveBase(currentRouteId, base);
+  document.getElementById('optimizeModalOverlay').style.display = 'none';
+  pendingOptimizedOrder = null;
+  renderSetupList();
+});
+
+/* ---------------------------------------------------------
+   DIRECCIÓN ALTERNA (segundo punto de recogida/entrega)
+--------------------------------------------------------- */
+let altAddressStopId = null;
+
+window.openAltAddressForm = function(stopId){
+  const s = base.stops.find(x=>x.id===stopId);
+  if(!s) return;
+  altAddressStopId = stopId;
+  document.getElementById('altModalStopName').textContent = s.name;
+  document.getElementById('altAddressInput').value = s.altAddress || '';
+  document.getElementById('altAddressStatus').textContent = '';
+  document.getElementById('removeAltWrap').style.display = s.altAddress ? 'block' : 'none';
+  document.getElementById('altAddressModalOverlay').style.display = 'flex';
+};
+
+document.getElementById('cancelAltAddressBtn').addEventListener('click', ()=>{
+  document.getElementById('altAddressModalOverlay').style.display = 'none';
+  altAddressStopId = null;
+});
+
+document.getElementById('saveAltAddressBtn').addEventListener('click', async ()=>{
+  const s = base.stops.find(x=>x.id===altAddressStopId);
+  if(!s) return;
+  const addr = document.getElementById('altAddressInput').value.trim();
+  if(!addr){ alert('Escribe la dirección alterna.'); return; }
+  const statusEl = document.getElementById('altAddressStatus');
+  const btn = document.getElementById('saveAltAddressBtn');
+  btn.disabled = true; statusEl.textContent = 'Ubicando dirección...';
+  s.altAddress = addr;
+  try{
+    const g = await geocodeAddress(addr);
+    if(g){ s.altLat = g.lat; s.altLon = g.lon; }
+    else{
+      s.altLat = null; s.altLon = null;
+      statusEl.textContent = 'No se pudo ubicar automáticamente. Prueba escribiendo la dirección de forma más simple (sin el símbolo #) y vuelve a guardar.';
+    }
+  }catch(e){
+    s.altLat = null; s.altLon = null;
+  }
+  await saveBase(currentRouteId, base);
+  btn.disabled = false;
+  if(s.altLat){
+    document.getElementById('altAddressModalOverlay').style.display = 'none';
+    altAddressStopId = null;
+  }
+  renderSetupList();
+});
+
+document.getElementById('removeAltAddressBtn').addEventListener('click', async ()=>{
+  const s = base.stops.find(x=>x.id===altAddressStopId);
+  if(!s) return;
+  if(!confirm('¿Quitar la dirección alterna de ' + s.name + '?')) return;
+  delete s.altAddress; delete s.altLat; delete s.altLon;
+  await saveBase(currentRouteId, base);
+  document.getElementById('altAddressModalOverlay').style.display = 'none';
+  altAddressStopId = null;
+  renderSetupList();
+});
+
+/* ---------------------------------------------------------
+   AJUSTE MANUAL EN MAPA (fallback cuando el geocodificador falla)
+--------------------------------------------------------- */
+let pickerMapInstance = null;
+let pickerMarker = null;
+let pickerStopId = null;
+let pickerMode = 'base'; // 'base' = edita la ruta guardada · 'trip' = solo el recorrido de hoy
+
+window.openMapPicker = function(stopId, mode){
+  pickerMode = mode || 'base';
+  const s = (pickerMode === 'trip' ? trip.stops : base.stops).find(x=>x.id===stopId);
+  if(!s) return;
+  pickerStopId = stopId;
+  const loc = pickerMode === 'trip' ? getEffectiveLoc(s) : { lat:s.lat, lon:s.lon, address:s.address };
+  document.getElementById('mapModalStopName').textContent =
+    (pickerMode === 'trip' ? `(solo hoy${s.useAlt ? ' · alterna' : ''}) ` : '') + `${s.name} — ${loc.address}`;
+  document.getElementById('pickerSearchInput').value = '';
+  document.getElementById('mapModalOverlay').style.display = 'flex';
+
+  const hasFix = !!(loc.lat && loc.lon);
+  const startLat = loc.lat || (currentPos ? currentPos.lat : 4.7110);
+  const startLon = loc.lon || (currentPos ? currentPos.lon : -74.0721);
+
+  // esperar a que el modal sea visible antes de inicializar Leaflet (si no, mide 0px)
+  setTimeout(()=>{
+    if(pickerMapInstance){ pickerMapInstance.remove(); pickerMapInstance = null; }
+    pickerMapInstance = L.map('pickerMap').setView([startLat, startLon], hasFix ? 17 : 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(pickerMapInstance);
+    pickerMarker = L.marker([startLat, startLon], { draggable:true }).addTo(pickerMapInstance);
+    pickerMapInstance.on('click', e=>{ pickerMarker.setLatLng(e.latlng); });
+    pickerMapInstance.invalidateSize();
+  }, 60);
+};
+
+document.getElementById('pickerSearchBtn').addEventListener('click', async ()=>{
+  const q = document.getElementById('pickerSearchInput').value.trim();
+  if(!q || !pickerMapInstance) return;
+  const btn = document.getElementById('pickerSearchBtn');
+  btn.disabled = true; btn.textContent = 'Buscando...';
+  try{
+    const g = await geocodeAddress(q);
+    if(g){
+      pickerMapInstance.setView([g.lat, g.lon], 17);
+      pickerMarker.setLatLng([g.lat, g.lon]);
+    }else{
+      alert('No se encontró esa dirección. Puedes ubicarla arrastrando el pin manualmente.');
+    }
+  }finally{
+    btn.disabled = false; btn.textContent = 'Buscar';
+  }
+});
+
+function closeMapPicker(){
+  document.getElementById('mapModalOverlay').style.display = 'none';
+  pickerStopId = null;
+}
+document.getElementById('cancelMapPickBtn').addEventListener('click', closeMapPicker);
+
+document.getElementById('saveMapPickBtn').addEventListener('click', async ()=>{
+  if(!pickerStopId || !pickerMarker) return;
+  const ll = pickerMarker.getLatLng();
+  if(pickerMode === 'trip'){
+    const s = trip.stops.find(x=>x.id===pickerStopId);
+    if(s){
+      // Ajusta la coordenada de la dirección que esté activa hoy (principal o alterna),
+      // sin tocar nunca la ruta guardada.
+      if(s.useAlt){ s.altLat = ll.lat; s.altLon = ll.lng; }
+      else{ s.lat = ll.lat; s.lon = ll.lng; }
+      await saveTrip(currentRouteId, trip);
+    }
+    closeMapPicker();
+    renderSuggested();
+    renderTimeline();
+  }else{
+    const s = base.stops.find(x=>x.id===pickerStopId);
+    if(s){
+      s.lat = ll.lat; s.lon = ll.lng;
+      await saveBase(currentRouteId, base);
+    }
+    closeMapPicker();
+    renderSetupList();
+  }
+});
+
+/* ---------------------------------------------------------
+   PWA: service worker + instalación nativa
+--------------------------------------------------------- */
+if('serviceWorker' in navigator){
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+    // Hay una versión nueva ya instalada: ofrecemos recargar (no recargamos solos
+    // para no interrumpir un toque a mitad de recorrido).
+    if(hadController) document.getElementById('updateBtn').style.display = 'flex';
+  });
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+document.getElementById('updateBtn').addEventListener('click', ()=>{ location.reload(); });
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('installAppBtn').style.display = 'flex';
+});
+document.getElementById('installAppBtn').addEventListener('click', async ()=>{
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  document.getElementById('installAppBtn').style.display = 'none';
+});
+window.addEventListener('appinstalled', ()=>{
+  document.getElementById('installAppBtn').style.display = 'none';
+});
+
+/* ---------------------------------------------------------
+   RUTA CONTINUA SIN ZIGZAG (Google Maps, multi-parada)
+   Waze no admite paradas intermedias en su enlace de navegación:
+   solo puede recibir UN destino a la vez, así que cada tramo se
+   calcula sin saber qué sigue después. Google Maps sí permite
+   pasar varias paradas en un solo enlace y calcula el camino
+   completo de una vez, respetando el orden que le demos
+   (no lo reordena) — eso es lo que evita el zigzag.
+--------------------------------------------------------- */
+document.getElementById('fullRouteMapsBtn').addEventListener('click', ()=>{
+  const pending = trip.stops.filter(s=>s.status==='pending');
+  if(pending.length === 0){ alert('No quedan paradas pendientes en el recorrido de hoy.'); return; }
+
+  const origin = currentPos ? `${currentPos.lat},${currentPos.lon}` : `${pending[0].lat},${pending[0].lon}`;
+  const destination = pending[pending.length - 1];
+  const waypoints = pending.slice(0, -1); // todas menos la última (que es el destino final)
+
+  if(waypoints.length > 23){
+    alert('Google Maps admite hasta 25 puntos por enlace. Con tantas paradas pendientes, mejor navega en tramos más cortos.');
+    return;
+  }
+
+  let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}` +
+            `&destination=${destination.lat},${destination.lon}&travelmode=driving`;
+  if(waypoints.length){
+    url += '&waypoints=' + waypoints.map(w=>`${w.lat},${w.lon}`).join('|');
+  }
+  window.location.href = url;
+});
+
+/* ---------------------------------------------------------
+   UTIL
+--------------------------------------------------------- */
+function escapeHtml(str){
+  return (str||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+</script>
+</body>
+</html>
