@@ -397,6 +397,10 @@ input[type=text]:focus{border-color:var(--accent);}
   width:100%; max-width:420px;
 }
 .lock-card h2{font-family:var(--font-display); font-size:20px; margin:0 0 6px;}
+.lock-card input#lockCodeInput{
+  font-size:26px; letter-spacing:.14em; text-align:center;
+  text-transform:uppercase; font-family:var(--font-mono); padding:14px 10px;
+}
 .lock-error{color:#8A2A2E; font-size:13px; min-height:18px; margin-top:8px;}
 .count-pill{
   font-family:var(--font-mono);
@@ -416,9 +420,10 @@ input[type=text]:focus{border-color:var(--accent);}
     <h2>Acceso a la app</h2>
     <p class="muted" id="lockMessage" style="margin-bottom:12px;"></p>
     <label>Código de tu puesto</label>
-    <input type="text" id="lockCodeInput" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+    <input type="text" id="lockCodeInput" placeholder="K7M-4PQ" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false">
     <div class="lock-error" id="lockError"></div>
-    <button class="btn btn-primary btn-block" id="activateBtn" style="margin-top:10px;">Entrar</button>
+    <button class="btn btn-primary btn-block" id="activateBtn" style="margin-top:10px; padding:15px; font-size:16px;">Entrar</button>
+    <button class="btn btn-ghost btn-block" id="lockOtherBtn" style="margin-top:8px; display:none;">Usar otro código</button>
     <p class="tiny" style="margin-top:14px; line-height:1.6;" id="lockContact"></p>
     <p class="tiny" style="margin-top:6px;">ID de este dispositivo: <b id="lockDeviceId"></b></p>
   </div>
@@ -770,6 +775,7 @@ function reasonText(reason, freeAt){
     case 'invalid': return 'Código incorrecto. Revísalo e inténtalo de nuevo.';
     case 'revoked': return 'Esta licencia fue desactivada.';
     case 'expired': return 'Esta licencia venció.';
+    case 'throttled': return 'Demasiados intentos. Espera unos 10 minutos e inténtalo de nuevo.';
     case 'busy': {
       let cuando = '';
       if(freeAt){
@@ -790,6 +796,7 @@ function showLock(msg, err, prefillCode){
   document.getElementById('lockContact').textContent = CONTACT_TEXT;
   document.getElementById('lockDeviceId').textContent = getDeviceId().slice(0, 8);
   if(prefillCode) document.getElementById('lockCodeInput').value = prefillCode;
+  document.getElementById('lockOtherBtn').style.display = prefillCode ? 'block' : 'none';
   document.getElementById('lockScreen').style.display = 'flex';
 }
 function hideLock(){ document.getElementById('lockScreen').style.display = 'none'; }
@@ -815,8 +822,9 @@ function updateLicenseCard(){
 
 let lastLicenseCheck = 0;
 let checkingLicense = false;
+let seatReleased = false;   // true mientras el usuario haya liberado el puesto y no haya vuelto a entrar
 async function checkLicense(){
-  if(checkingLicense) return;
+  if(checkingLicense || seatReleased) return;
   checkingLicense = true;
   lastLicenseCheck = Date.now();
   try{
@@ -831,7 +839,7 @@ async function checkLicense(){
     try{
       const r = await rpc('use_license', { p_code: lic.code, p_session: getDeviceId() });
       if(r && r.ok){
-        writeLicense({ ...lic, lastOk: Date.now(), expires_at: r.expires_at, label: r.label });
+        writeLicense({ ...lic, lastOk: Date.now(), expires_at: r.expires_at, label: r.label, graceHours: r.grace_hours || null });
         hideLock(); updateLicenseCard();
         return true;
       }
@@ -847,11 +855,12 @@ async function checkLicense(){
       return false;
     }catch(e){
       // Sin conexión o servidor caído: se confía en la última verificación exitosa.
+      const graceH = lic.graceHours || OFFLINE_GRACE_HOURS;
       const ageHours = (Date.now() - (lic.lastOk || 0)) / 3600000;
       const vencida = lic.expires_at && new Date(lic.expires_at) < new Date();
-      if(!vencida && ageHours <= OFFLINE_GRACE_HOURS){ hideLock(); updateLicenseCard(); return true; }
+      if(!vencida && ageHours <= graceH){ hideLock(); updateLicenseCard(); return true; }
       showLock(vencida ? 'Esta licencia venció.'
-        : `Hace más de ${OFFLINE_GRACE_HOURS} horas que esta copia no se puede verificar. Conéctate a internet y vuelve a abrir la app.`);
+        : `Hace más de ${graceH >= 48 ? Math.round(graceH/24) + ' días' : graceH + ' horas'} que esta copia no se puede verificar. Conéctate a internet y vuelve a abrir la app.`, '', lic.code);
       return false;
     }
   }finally{ checkingLicense = false; }
@@ -866,7 +875,8 @@ function touchSeat(){
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) touchSeat(); });
 setInterval(()=>{ if(!document.hidden) touchSeat(); }, 5 * 60000);
 
-// Libera el puesto para que otro conductor pueda usarlo y bloquea este dispositivo.
+// Libera el puesto para que otro conductor pueda usarlo. El código se conserva en este
+// celular: al volver basta tocar «Entrar», sin escribir nada.
 window.releaseSeatAndLock = async function(){
   const lic = readLicense();
   let liberado = true;
@@ -874,11 +884,11 @@ window.releaseSeatAndLock = async function(){
     try{ await rpc('release_license', { p_code: lic.code, p_session: getDeviceId() }); }
     catch(e){ liberado = false; }
   }
-  writeLicense(null);
+  seatReleased = true;
   showLock(liberado
-    ? 'Puesto liberado. Para volver a usar la app, escribe el código de tu puesto.'
-    : 'No hubo conexión para avisar al servidor: el puesto se liberará solo en menos de una hora.');
-  document.getElementById('lockCodeInput').value = '';
+    ? 'Puesto liberado. Cuando vuelvas a usar la app, toca «Entrar».'
+    : 'No hubo conexión para avisar al servidor: el puesto se liberará solo en menos de una hora. Cuando vuelvas, toca «Entrar».',
+    '', lic && lic.code);
   updateLicenseCard();
 };
 document.getElementById('releaseSeatBtn').addEventListener('click', ()=>{
@@ -887,32 +897,71 @@ document.getElementById('releaseSeatBtn').addEventListener('click', ()=>{
   }
 });
 
-document.getElementById('activateBtn').addEventListener('click', async ()=>{
+function normalizeCode(c){ return String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+
+async function activateWithCode(code){
   const input = document.getElementById('lockCodeInput');
   const errEl = document.getElementById('lockError');
   const btn = document.getElementById('activateBtn');
-  const code = input.value.trim();
-  if(!code){ errEl.textContent = 'Escribe el código de tu puesto.'; return; }
+  if(!code){ errEl.textContent = 'Escribe el código de tu puesto.'; return false; }
   btn.disabled = true; errEl.textContent = 'Verificando...';
   try{
+    const old = readLicense();
     const r = await rpc('use_license', { p_code: code, p_session: getDeviceId() });
     if(r && r.ok){
-      writeLicense({ code, lastOk: Date.now(), expires_at: r.expires_at, label: r.label });
+      if(old && old.code && normalizeCode(old.code) !== normalizeCode(code)){
+        rpc('release_license', { p_code: old.code, p_session: getDeviceId() }).catch(()=>{});
+      }
+      writeLicense({ code, lastOk: Date.now(), expires_at: r.expires_at, label: r.label, graceHours: r.grace_hours || null });
+      seatReleased = false;
       input.value = ''; errEl.textContent = '';
       hideLock(); updateLicenseCard();
-    }else{
-      errEl.textContent = reasonText(r && r.reason, r && r.free_at);
+      return true;
     }
+    showLock(null, reasonText(r && r.reason, r && r.free_at), code);
+    return false;
   }catch(e){
-    errEl.textContent = 'No se pudo conectar. Revisa tu internet e inténtalo de nuevo.';
+    showLock(null, 'No se pudo conectar. Revisa tu internet e inténtalo de nuevo.', code);
+    return false;
   }finally{ btn.disabled = false; }
+}
+
+document.getElementById('activateBtn').addEventListener('click', ()=>{
+  activateWithCode(document.getElementById('lockCodeInput').value.trim());
 });
+document.getElementById('lockCodeInput').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') activateWithCode(e.target.value.trim());
+});
+
+// «Usar otro código»: suelta el puesto actual y deja escribir uno distinto.
+document.getElementById('lockOtherBtn').addEventListener('click', ()=>{
+  const lic = readLicense();
+  if(lic && lic.code && !seatReleased){
+    rpc('release_license', { p_code: lic.code, p_session: getDeviceId() }).catch(()=>{});
+  }
+  writeLicense(null);
+  seatReleased = false;
+  document.getElementById('lockCodeInput').value = '';
+  showLock('Escribe el código del puesto que vas a usar.');
+  updateLicenseCard();
+});
+
+// Enlace de activación: https://…/#puesto=K7M-4PQ  (un toque desde WhatsApp).
+// Se borra de la barra de direcciones apenas se lee.
+function codeFromUrl(){
+  try{
+    const m = location.hash.match(/[#&]puesto=([A-Za-z0-9\-]+)/);
+    if(m){ history.replaceState(null, '', location.pathname + location.search); return m[1]; }
+  }catch(e){}
+  return null;
+}
 
 /* ---------------------------------------------------------
    INIT
 --------------------------------------------------------- */
 (async function init(){
-  checkLicense();
+  const linkCode = codeFromUrl();
+  if(linkCode){ activateWithCode(linkCode); } else { checkLicense(); }
   routesIndex = await loadIndex();
   if(routesIndex.length === 0){
     // primera vez: crear una ruta por defecto
@@ -1733,6 +1782,12 @@ document.getElementById('saveMapPickBtn').addEventListener('click', async ()=>{
 --------------------------------------------------------- */
 if('serviceWorker' in navigator){
   const hadController = !!navigator.serviceWorker.controller;
+  // El service worker avisa cuando descargó una versión nueva en segundo plano.
+  navigator.serviceWorker.addEventListener('message', (e)=>{
+    if(e.data && e.data.type === 'UPDATE_AVAILABLE'){
+      document.getElementById('updateBtn').style.display = 'flex';
+    }
+  });
   navigator.serviceWorker.addEventListener('controllerchange', ()=>{
     // Hay una versión nueva ya instalada: ofrecemos recargar (no recargamos solos
     // para no interrumpir un toque a mitad de recorrido).
